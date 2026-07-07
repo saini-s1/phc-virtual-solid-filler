@@ -1,0 +1,13 @@
+# keep line endings consistent regardless of who clones the repo (windows/mac).
+# text files are normalised to LF in the repo; git checks them out natively.
+* text=auto eol=lf
+
+# these are binary — never touch their bytes.
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary

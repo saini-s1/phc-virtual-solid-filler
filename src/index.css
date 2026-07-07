@@ -1,0 +1,136 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html,
+  body,
+  #root {
+    height: 100%;
+  }
+
+  body {
+    @apply font-sans text-ink-700 antialiased;
+    /* Crisp near-white canvas with two restrained accent washes. The reactive
+       dot field (HoverParticles) renders on its own layer behind content. */
+    background-color: #fbfcfe;
+    background-image:
+      radial-gradient(900px 440px at 92% -10%, rgba(6, 182, 212, 0.06), transparent 60%),
+      radial-gradient(760px 420px at -8% 4%, rgba(38, 73, 234, 0.05), transparent 58%);
+    background-attachment: fixed;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-display text-ink-900;
+  }
+
+  *:focus-visible {
+    @apply outline-none ring-2 ring-pg-cyan-500/60 ring-offset-2 ring-offset-[#fbfcfe];
+  }
+
+  .tnum {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+@layer components {
+  /* Flat, precise surfaces: hairline border, whisper-soft shadow, and a
+     barely-there top highlight. No heavy blur — clarity over glass. */
+  .surface {
+    @apply relative rounded-2xl border border-ink-100/80 bg-white shadow-card transition-[box-shadow,transform,border-color] duration-300;
+  }
+
+  .surface:hover {
+    @apply -translate-y-px border-ink-200 shadow-elevated;
+  }
+
+  .surface-quiet {
+    @apply rounded-2xl border border-ink-100/70 bg-white/70 backdrop-blur-sm;
+  }
+
+  .surface-inset {
+    @apply rounded-xl border border-ink-100 bg-ink-50/60;
+  }
+
+  .eyebrow {
+    @apply font-mono text-[10px] font-semibold uppercase tracking-[0.22em] text-ink-400;
+  }
+
+  .pill {
+    @apply inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-[11px] font-semibold;
+  }
+
+  /* Refined solid accent with a precise hairline ring and a subtle glow on
+     hover — restrained rather than a candy gradient. */
+  .btn-primary {
+    @apply inline-flex items-center justify-center gap-2 rounded-xl bg-pg-blue-600 px-4 py-3 text-sm font-semibold tracking-[-0.01em] text-white shadow-[0_1px_0_rgba(255,255,255,0.15)_inset,0_8px_22px_-12px_rgba(38,73,234,0.7)] ring-1 ring-pg-blue-700/60 transition duration-200
+      hover:bg-pg-blue-700 hover:shadow-glow active:scale-[0.99] disabled:cursor-not-allowed disabled:opacity-60;
+  }
+
+  .btn-ghost {
+    @apply inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs font-semibold text-ink-600 transition hover:border-ink-300 hover:bg-ink-50;
+  }
+
+  .field-label {
+    @apply mb-1.5 flex items-center gap-1.5 font-mono text-[10px] font-semibold uppercase tracking-[0.12em] text-ink-500;
+  }
+
+  .select-input,
+  .text-input {
+    @apply w-full appearance-none rounded-lg border border-ink-200 bg-white px-3 py-2.5 text-sm font-medium text-ink-800 transition
+      hover:border-ink-300 focus:border-pg-cyan-500 focus:ring-2 focus:ring-pg-cyan-500/20;
+  }
+
+  .number-input {
+    @apply w-full rounded-lg border border-ink-200 bg-white px-3 py-2 text-sm font-mono tabular-nums text-ink-800 transition
+      hover:border-ink-300 focus:border-pg-cyan-500 focus:ring-2 focus:ring-pg-cyan-500/20;
+  }
+}
+
+/* Range slider — minimal brand-gradient track with a precise thumb */
+input[type="range"] {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 5px;
+  border-radius: 9999px;
+  background: linear-gradient(90deg, #2649ea 0%, #06b6d4 100%);
+  outline: none;
+}
+input[type="range"]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: white;
+  border: 2.5px solid #06b6d4;
+  box-shadow: 0 1px 5px rgba(6, 182, 212, 0.4);
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+input[type="range"]::-webkit-slider-thumb:hover {
+  transform: scale(1.12);
+  box-shadow: 0 0 0 6px rgba(6, 182, 212, 0.12), 0 1px 5px rgba(6, 182, 212, 0.4);
+}
+input[type="range"]::-moz-range-thumb {
+  width: 18px;
+  height: 18px;
+  border-radius: 9999px;
+  background: white;
+  border: 2.5px solid #06b6d4;
+  box-shadow: 0 1px 5px rgba(6, 182, 212, 0.4);
+  cursor: pointer;
+}
+
+/* Hide number input spinners for a cleaner look */
+input[type="number"]::-webkit-outer-spin-button,
+input[type="number"]::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+input[type="number"] {
+  -moz-appearance: textfield;
+}

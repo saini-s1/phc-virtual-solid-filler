@@ -1,0 +1,17 @@
+node_modules
+dist
+dist-ssr
+*.local
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea
+*.log
+npm-debug.log*
+
+# typescript incremental build cache (regenerated on every build)
+tsconfig.tsbuildinfo
+*.tsbuildinfo
+
+# python scratch env used by the nutrition spec verifiers
+.venv/
