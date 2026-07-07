@@ -220,15 +220,48 @@ keeps working.
 
 ### …add a new gummy (product data)
 **[src/packaging/data/productPresets.ts](src/packaging/data/productPresets.ts)**
-Copy one of the objects in `GUMMY_PRESETS`, give it a new `id` and `name`, and
-fill in the geometry (top radius, bottom radius, height), density, and weight.
-The dropdown, the model, and the chart all pick it up automatically — no other
-edits needed.
+Scroll to `GUMMY_PRESETS` and copy-paste this block, then fill in your numbers:
+
+```ts
+  {
+    id: "my-gummy",          // a unique short key (no spaces)
+    name: "My New Gummy",    // shown in the dropdown
+    shortName: "MyGummy",    // shown on the comparison chart
+    description: "One line about what this gummy is.",
+    radiusTopMm: 6.0,        // radius of the smaller top face, mm
+    radiusBottomMm: 7.5,     // radius of the wider bottom face, mm
+    heightMm: 12.0,          // gummy height, mm
+    densityGPerMl: 1.3,      // material density, g/mL
+    weightG: 3.0,            // weight of one gummy, g
+    accentColor: "#06b6d4",  // hex color used in the chart bar
+  },
+```
+
+That's the only edit — the dropdown, model, and chart all pick it up automatically.
 
 ### …add a new bottle (package data)
 **[src/packaging/data/bottlePresets.ts](src/packaging/data/bottlePresets.ts)**
-Add a `round(...)` or `rect(...)` line to `BOTTLE_PRESETS` with your dimensions.
-The units are documented at the top of the file.
+Scroll to `BOTTLE_PRESETS` and add one line. For a **round** bottle:
+
+```ts
+round(
+  "r-400cc",               // unique id (no spaces)
+  "400 cc — Round",        // shown in the dropdown
+  400,                     // bottle volume, mL
+  102,                     // shoulder height (fill-line), mm from bottom
+  110,                     // neck height (mouth), mm from bottom
+  68                       // outer body diameter, mm
+),
+```
+
+For a **rectangular** bottle, add a 7th argument: the front-to-back depth in mm:
+
+```ts
+rect("x-400cc", "400 cc — Rectangle", 400, 104, 112, 70, 46),
+//                                               width↑  depth↑
+```
+
+That's all — the dropdown groups them automatically (round first, then rectangle).
 
 ### …the page layout (which panels go where)
 **[src/packaging/PackagingApp.tsx](src/packaging/PackagingApp.tsx)** — this is the
