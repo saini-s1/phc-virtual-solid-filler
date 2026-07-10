@@ -72,8 +72,11 @@ To connect real data:
 
 The component layer (`src/packaging/components/*`) reads only from the result shape, so swapping the engine is non-breaking.
 
-> New to the codebase? Start with **[HANDOFF.md](../HANDOFF.md)** — it maps every
-> "I want to change X" to the exact file to open.
+> New to the codebase? Each module has its own developer handoff guide at the
+> repo root: **[HANDOFF_PACKAGING.md](../HANDOFF_PACKAGING.md)** (the DEM filler
+> — includes app setup + run instructions) and
+> **[HANDOFF_NUTRITION.md](../HANDOFF_NUTRITION.md)**. Both map every "I want to
+> change X" to the exact file to open.
 
 ## Project structure
 

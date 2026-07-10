@@ -2,7 +2,7 @@
 
 This doc covers the nutrition module specifically (`src/nutrition/`). For the
 packaging/DEM side, plus app setup and run instructions, see
-[`src/packaging/HANDOFF.md`](../packaging/HANDOFF.md).
+[`HANDOFF_PACKAGING.md`](HANDOFF_PACKAGING.md).
 
 ---
 
