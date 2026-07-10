@@ -2,7 +2,12 @@ import type { NutrientId } from "./nutrients";
 
 // Calculation inputs. Plain serializable data — no UI types, no functions.
 
-export type CalorieMethod = "A" | "B" | "C" | "D" | "E" | "F";
+// The source workbook ("Nutrition STONF" sheet) implements exactly three calorie methods,
+// all under 21 CFR 101.9(c)(1)(i). "C" and "C+" share regulatory part (C); they differ only
+// by the fiber data available: plain C credits TOTAL dietary fiber at 2 kcal/g (used when no
+// soluble/insoluble split exists); C+ credits SOLUBLE fiber at 2 kcal/g (the workbook's
+// declared value). B is legacy general factors (4/4/9).
+export type CalorieMethod = "B" | "C" | "C+";
 export type NutrientSource = "added" | "naturally_occurring";
 
 /**
@@ -23,10 +28,16 @@ export interface IngredientNutrient {
 export interface Ingredient {
   id: string;
   name: string;
+  /** Supplier trade name (Excel Ingredients!B). Display only. */
+  tradeName?: string;
+  /** CAS registry number (Excel Ingredients!C). Display only; "Mixture" for blends. */
+  cas?: string;
+  /** P&G GCAS material code (Excel Ingredients!D). Display only. */
+  gcas?: string;
   /**
    * Optional per-100 g "kCal (US Rules)" supplier/specific factor — the Excel's
-   * Ingredients!E column. When present on every recipe ingredient, the engine can
-   * declare calories by Method D (101.9(c)(1)(i)(D)), exactly reproducing the workbook.
+   * Ingredients!E column. Display/reference only; the calorie declaration uses the
+   * workbook's B / C / C+ formulas (101.9(c)(1)(i)).
    */
   caloriesPer100g?: number;
   nutrients: IngredientNutrient[];

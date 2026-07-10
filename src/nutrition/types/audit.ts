@@ -1,7 +1,12 @@
 import type { NutrientId } from "./nutrients";
 import type { CalorieMethod } from "./inputs";
 
-// Append-only, structured audit trail (OH-222 expectation).
+// Append-only audit trail. Written by the orchestrator as it runs, then attached to
+// CalcResponse so a reviewer can trace every number back to an input or a regulation.
+// Shape only — AuditBuilder (audit/audit.ts) is the implementation.
+//
+// OH-222 expectation: every transform, rounding step, compliance decision, and correction
+// must produce at least one AuditEntry so nothing is silent.
 
 export type AuditKind =
   | "input"

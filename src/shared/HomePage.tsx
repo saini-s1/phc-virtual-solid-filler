@@ -45,24 +45,23 @@ export default function HomePage({ onSelect }: Props) {
 
       <main className="relative z-10 mx-auto flex w-full max-w-[1400px] flex-1 flex-col px-6 pb-12">
         {/* Hero */}
-        <section className="mt-8 max-w-3xl animate-fade-up">
+        <section className="mx-auto mt-10 max-w-2xl animate-fade-up text-center">
           <p className="font-mono text-[11px] font-semibold uppercase tracking-[0.28em] text-pg-cyan-600">
-            // SELECT_MODULE
+            Select a module
           </p>
           <h2 className="mt-3 text-3xl font-extrabold leading-[1.05] tracking-[-0.03em] text-ink-900 md:text-[2.6rem]">
-            Choose a modeling workspace.
+            Choose a modeling workspace
           </h2>
         </section>
 
         {/* Module tiles */}
-        <section className="mt-10 grid gap-6 lg:grid-cols-2">
+        <section className="mx-auto mt-10 grid w-full max-w-5xl gap-6 lg:grid-cols-2">
           <ModuleTile
             tag="MODULE_01"
-            status="live"
             icon={<FlaskConical className="h-7 w-7" />}
             name="Virtual Solid Filler"
             kicker="Packaging · DEM Surrogate"
-            description="Predict bottle fill height, slack-fill, and solid packing for PHC gummies. Backed by a placeholder surrogate trained on DEM simulation data."
+            description="Predict bottle fill height, slack-fill, and solid packing for PHC gummies, using a surrogate trained on DEM simulation data."
             chips={["Gummies", "Bottles", "Fill height", "Slack-fill"]}
             cta="Launch module"
             accent="cyan"
@@ -71,38 +70,22 @@ export default function HomePage({ onSelect }: Props) {
           />
           <ModuleTile
             tag="MODULE_02"
-            status="concept"
             icon={<Apple className="h-7 w-7" />}
             name="Nutrition Calculator"
-            kicker="Formulation · Hypothetical"
-            description="Hypothetical companion surrogate for nutrient profiling. Translate ingredient and serving inputs into a predicted nutrition panel."
-            chips={["Macros", "Micros", "Serving", "Hypothetical"]}
-            cta="Open concept"
+            kicker="Formulation · Nutrition Facts"
+            description="Turn ingredient and serving inputs into a rounded, FDA-style Nutrition Facts panel — with %DV and compliance checks."
+            chips={["Macros", "Micros", "%DV", "Compliance"]}
+            cta="Launch module"
             accent="lime"
             onClick={() => onSelect("nutrition")}
             delay={200}
           />
         </section>
-
-        {/* Footnote */}
-        <section className="mt-12 animate-fade-up [animation-delay:320ms]">
-          <div className="surface-quiet flex flex-col gap-1 px-5 py-4 md:flex-row md:items-center md:justify-between">
-            <p className="text-xs text-ink-500">
-              <span className="font-semibold text-ink-700">Prototype only.</span>{" "}
-              All outputs across the suite are surrogate-model mocks — not
-              validated for technical use.
-            </p>
-            <p className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
-              build · 2026.07 · internal
-            </p>
-          </div>
-        </section>
       </main>
 
       <footer className="relative z-10 border-t border-ink-100/70 bg-white/60 backdrop-blur">
-        <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-2 px-6 py-3 text-[11px] text-ink-400">
-          <p>© 2026 P&amp;G Internal Prototype · PHC Modeling Suite</p>
-          <p className="font-mono">surrogate-model mockup · not for technical use</p>
+        <div className="mx-auto flex max-w-[1400px] items-center justify-center px-6 py-3 text-[11px] text-ink-400">
+          <p>© 2026 P&amp;G Internal · PHC Modeling Suite</p>
         </div>
       </footer>
     </div>
@@ -115,7 +98,6 @@ type TileAccent = "cyan" | "lime";
 
 type ModuleTileProps = {
   tag: string;
-  status: "live" | "concept";
   icon: ReactNode;
   name: string;
   kicker: string;
@@ -167,7 +149,6 @@ const ACCENT: Record<
 
 function ModuleTile({
   tag,
-  status,
   icon,
   name,
   kicker,
@@ -179,7 +160,6 @@ function ModuleTile({
   delay = 0,
 }: ModuleTileProps) {
   const a = ACCENT[accent];
-  const isLive = status === "live";
 
   return (
     <button
@@ -202,20 +182,13 @@ function ModuleTile({
 
       {/* Header row: tag + status */}
       <div className="flex items-center justify-between">
-        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-400">
+        <span className="font-mono text-[10px] font-semibold uppercase tracking-[0.24em] text-ink-500">
           {tag}
         </span>
-        {isLive ? (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
-            Live
-          </span>
-        ) : (
-          <span className="inline-flex items-center gap-1.5 rounded-full border border-amber-300/60 bg-amber-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-amber-700">
-            <span className="h-1.5 w-1.5 rounded-full bg-amber-500" />
-            Concept
-          </span>
-        )}
+        <span className="inline-flex items-center gap-1.5 rounded-full border border-emerald-300/50 bg-emerald-50 px-2 py-0.5 font-mono text-[10px] font-semibold uppercase tracking-[0.14em] text-emerald-700">
+          <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.7)]" />
+          Live
+        </span>
       </div>
 
       {/* Icon + title */}
@@ -237,7 +210,7 @@ function ModuleTile({
       </div>
 
       {/* Description */}
-      <p className="text-[14px] leading-relaxed text-ink-500">{description}</p>
+      <p className="text-[14px] leading-relaxed text-ink-600">{description}</p>
 
       {/* Chips */}
       <div className="flex flex-wrap gap-1.5">
@@ -253,8 +226,8 @@ function ModuleTile({
 
       {/* CTA row */}
       <div className="mt-auto flex items-center justify-between border-t border-ink-100 pt-4">
-        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-400">
-          {isLive ? "Ready · click to enter" : "Mock · click to preview"}
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] text-ink-500">
+          Ready · click to enter
         </span>
         <span
           className={`inline-flex items-center gap-2 rounded-lg border border-ink-200 bg-white px-3 py-1.5 text-xs font-semibold text-ink-700 transition-colors group-hover:border-ink-300 group-hover:bg-ink-50`}

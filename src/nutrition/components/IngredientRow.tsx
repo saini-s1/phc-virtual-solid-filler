@@ -7,7 +7,7 @@ import { TRACKED_NUTRIENT_IDS } from "../data/exampleProduct";
 import CompletenessBadge from "./CompletenessBadge";
 
 // One editable recipe line. Collapsed: name · %w/w · completeness badge. Expanded: rename,
-// per-100 g supplier calories (Method D input), and the per-100 g nutrient grid the engine
+// per-100 g supplier calories (US Rules column, reference only), and the per-100 g nutrient grid the engine
 // declares — plus remove. All edits flow up to the CalcRequest; this row owns only the
 // open/closed UI state.
 
@@ -75,9 +75,18 @@ export default function IngredientRow({
           onClick={() => setOpen((o) => !o)}
           aria-expanded={open}
           title={ingredient.name}
-          className="block w-full truncate text-left text-[13px] font-medium text-ink-700 hover:text-ink-900"
+          className="block w-full min-w-0 text-left"
         >
-          {ingredient.name}
+          <span className="block truncate text-[13px] font-medium text-ink-700 hover:text-ink-900">
+            {ingredient.name}
+          </span>
+          {(ingredient.cas || ingredient.gcas) && (
+            <span className="block truncate font-mono text-[10px] text-ink-400">
+              {ingredient.cas && <>CAS {ingredient.cas}</>}
+              {ingredient.cas && ingredient.gcas && " · "}
+              {ingredient.gcas && <>GCAS {ingredient.gcas}</>}
+            </span>
+          )}
         </button>
         <div className="flex items-center gap-1">
           <input
@@ -120,7 +129,33 @@ export default function IngredientRow({
                 className="number-input w-full py-1.5 text-left text-[13px]"
               />
 
-              {/* Supplier calories (Method D input) */}
+              {/* Supplier identity (read-only, from the Ingredients library / Excel tab) */}
+              {(ingredient.tradeName || ingredient.cas || ingredient.gcas) && (
+                <dl className="mt-2 space-y-0.5 rounded-md bg-ink-50 px-2 py-1.5">
+                  {ingredient.tradeName && (
+                    <div className="flex gap-2 text-[11px]">
+                      <dt className="shrink-0 text-ink-400">Trade name</dt>
+                      <dd className="truncate text-ink-600" title={ingredient.tradeName}>
+                        {ingredient.tradeName}
+                      </dd>
+                    </div>
+                  )}
+                  {ingredient.cas && (
+                    <div className="flex gap-2 text-[11px]">
+                      <dt className="shrink-0 text-ink-400">CAS</dt>
+                      <dd className="font-mono text-ink-600">{ingredient.cas}</dd>
+                    </div>
+                  )}
+                  {ingredient.gcas && (
+                    <div className="flex gap-2 text-[11px]">
+                      <dt className="shrink-0 text-ink-400">GCAS</dt>
+                      <dd className="font-mono text-ink-600">{ingredient.gcas}</dd>
+                    </div>
+                  )}
+                </dl>
+              )}
+
+              {/* Supplier calories (US Rules column, reference only) */}
               <div className="mt-3 flex items-center justify-between gap-2">
                 <label className="field-label mb-0" htmlFor={`kcal-${ingredient.id}`}>
                   Calories / 100 g

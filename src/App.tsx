@@ -5,14 +5,27 @@ import { useState } from "react";
 import HomePage, { type AppView } from "./shared/HomePage";
 import PackagingApp from "./packaging/PackagingApp";
 import NutritionApp from "./nutrition/NutritionApp";
+import CursorGlow from "./shared/CursorGlow";
 
 export default function App() {
   const [view, setView] = useState<AppView>("home");
 
   const goHome = () => setView("home");
 
-  if (view === "packaging") return <PackagingApp onBack={goHome} />;
-  if (view === "nutrition") return <NutritionApp onBack={goHome} />;
-  return <HomePage onSelect={setView} />;
+  const screen =
+    view === "packaging" ? (
+      <PackagingApp onBack={goHome} />
+    ) : view === "nutrition" ? (
+      <NutritionApp onBack={goHome} />
+    ) : (
+      <HomePage onSelect={setView} />
+    );
+
+  return (
+    <>
+      <CursorGlow />
+      {screen}
+    </>
+  );
 }
 

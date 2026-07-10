@@ -49,9 +49,18 @@ const ROWS: Row[] = [
   [10, "pctDv", 10],
   [11, "pctDv", 10],
   [13, "pctDv", 15],
-  [50, "pctDv", 50],
-  [51, "pctDv", 50],
-  [55, "pctDv", 60],
+  // per-nutrient micronutrient amount increments (template "Nutrition" tab, 101.9(c)(8)(iii))
+  // Iron / Vit D → nearest 0.1
+  [0.26450765695392, "microNearestTenth", 0.3],
+  [0.0619, "microNearestTenth", 0.1],
+  [0.04, "microNearestTenth", 0],
+  // Vit C → nearest 1
+  [5.6, "microNearestOne", 6],
+  [0.00012702829824, "microNearestOne", 0],
+  // Potassium / Calcium / Vit A → nearest 10
+  [27.641746811217605, "microNearestTen", 30],
+  [5.916770200041602, "microNearestTen", 10],
+  [4.070182176, "microNearestTen", 0],
 ];
 
 describe("rounding — tier boundaries (101.9(c))", () => {

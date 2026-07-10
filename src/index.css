@@ -11,8 +11,8 @@
 
   body {
     @apply font-sans text-ink-700 antialiased;
-    /* Crisp near-white canvas with two restrained accent washes. The reactive
-       dot field (HoverParticles) renders on its own layer behind content. */
+    /* Crisp near-white canvas with two restrained accent washes. A soft blue
+       cursor glow (CursorGlow) tracks the pointer on its own layer above. */
     background-color: #fbfcfe;
     background-image:
       radial-gradient(900px 440px at 92% -10%, rgba(6, 182, 212, 0.06), transparent 60%),

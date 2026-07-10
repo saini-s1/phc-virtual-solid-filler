@@ -1,4 +1,5 @@
 import type {
+  AmountRoundingGroup,
   NutrientCatalogEntry,
   NutrientId,
 } from "../types/nutrients";
@@ -7,11 +8,17 @@ import type { NutrientSource } from "../types/inputs";
 // Canonical nutrient catalog (units, label order, indentation, rounding bucket).
 // Region-independent identity only — Daily Values & rounding tiers live in config/regions/*.
 
+// Shorthand builder for vitamins/minerals — they all share the same defaults
+// (kind: vitaminMineral, amountRoundingGroup, isThirdGroup: false, indentLevel: 0).
 function vm(
   id: NutrientId,
   displayName: string,
   unit: NutrientCatalogEntry["unit"],
   mandatory: boolean,
+  // Per-nutrient amount rounding increment from the template's "Nutrition" tab
+  // (21 CFR 101.9(c)(8)(iii)). Defaults to the generic 2-sig-fig bucket for the
+  // many vitamins/minerals the template does not call out individually.
+  amountRoundingGroup: AmountRoundingGroup = "vitaminMineralAmount",
 ): NutrientCatalogEntry {
   return {
     id,
@@ -19,7 +26,7 @@ function vm(
     unit,
     kind: "vitaminMineral",
     mandatory,
-    amountRoundingGroup: "vitaminMineralAmount",
+    amountRoundingGroup,
     isThirdGroup: false,
     indentLevel: 0,
   };
@@ -40,12 +47,15 @@ export const NUTRIENTS: Record<NutrientId, NutrientCatalogEntry> = {
   sugarAlcohol: { id: "sugarAlcohol", displayName: "Sugar Alcohol", unit: "g", kind: "macro", mandatory: false, amountRoundingGroup: "gram1", isThirdGroup: false, indentLevel: 1 },
   protein: { id: "protein", displayName: "Protein", unit: "g", kind: "macro", mandatory: true, amountRoundingGroup: "gram1", isThirdGroup: false, indentLevel: 0 },
 
-  vitaminD: vm("vitaminD", "Vitamin D", "mcg", true),
-  calcium: vm("calcium", "Calcium", "mg", true),
-  iron: vm("iron", "Iron", "mg", true),
-  potassium: vm("potassium", "Potassium", "mg", true),
-  vitaminA: vm("vitaminA", "Vitamin A", "mcg RAE", false),
-  vitaminC: vm("vitaminC", "Vitamin C", "mg", false),
+  // Mandatory micronutrients — per-nutrient rounding increments from the template's
+  // "Nutrition" tab (Iron 0.1 mg, Potassium/Calcium 10 mg, Vit D 0.1 mcg).
+  vitaminD: vm("vitaminD", "Vitamin D", "mcg", true, "microNearestTenth"),
+  calcium: vm("calcium", "Calcium", "mg", true, "microNearestTen"),
+  iron: vm("iron", "Iron", "mg", true, "microNearestTenth"),
+  potassium: vm("potassium", "Potassium", "mg", true, "microNearestTen"),
+  // Voluntary micronutrients called out in the template (Vit A 10 mcg RAE, Vit C 1 mg).
+  vitaminA: vm("vitaminA", "Vitamin A", "mcg RAE", false, "microNearestTen"),
+  vitaminC: vm("vitaminC", "Vitamin C", "mg", false, "microNearestOne"),
   vitaminE: vm("vitaminE", "Vitamin E", "mg", false),
   vitaminK: vm("vitaminK", "Vitamin K", "mcg", false),
   thiamin: vm("thiamin", "Thiamin", "mg", false),

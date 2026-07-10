@@ -1,7 +1,5 @@
 # Developer guide — PHC Virtual Solid Filler
 
-Hi Prashant 👋
-
 This is the full walkthrough of the app: what it is, how to run it, how the code
 is organised, and — most importantly — **exactly which file to open when you want
 to change something.** No prior knowledge of this codebase is assumed. Read

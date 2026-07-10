@@ -85,17 +85,17 @@ const CLASS_META: Record<
 > = {
   I: {
     title: "Class I · added nutrients",
-    rule: "Label must read ≥ 100% of declared through end of shelf life.",
+    rule: "Must stay at or above 100% of the label.",
     citation: "101.9(g)(4)(i)",
   },
   II: {
     title: "Class II · naturally occurring",
-    rule: "Label must read ≥ 80% of declared (NLT 80%).",
+    rule: "Must stay at or above 80% of the label.",
     citation: "101.9(g)(4)(ii)",
   },
   thirdGroup: {
     title: "Third group · calories, sugars, fats, sodium",
-    rule: "As-formulated must be ≤ 120% of declared (NMT 120%).",
+    rule: "Must stay at or below 120% of the label.",
     citation: "101.9(g)(5)",
   },
 };
@@ -156,7 +156,7 @@ function CalorieRow({ cal }: { cal: CalorieResult }) {
       <td className="px-3 py-2 text-right font-mono text-[12px] text-ink-400">n/a</td>
       <td className="px-3 py-2 text-right font-mono text-[12px] text-ink-400">n/a</td>
       <td className="px-3 py-2 text-right text-[13px] font-bold tabular-nums text-ink-900">
-        {cal.methodImplemented ? cal.value : "n/a"}{" "}
+        {cal.value}{" "}
         <span className="font-mono text-[10px] font-normal text-ink-400">· Method {cal.method}</span>
       </td>
       <td className="px-3 py-2 text-left text-[11px] leading-snug text-ink-400">
@@ -175,7 +175,22 @@ function ClassSection({
   nutrients: NutrientResult[];
   calories?: CalorieResult;
 }) {
-  if (nutrients.length === 0 && !calories) return null;
+  if (nutrients.length === 0 && !calories) {
+    // Show the class even when empty (e.g. no added nutrients in this formula) so the three
+    // 101.9(g) groups are always visible and the structure is clear.
+    const meta = CLASS_META[klass];
+    return (
+      <div className="surface-inset overflow-hidden p-0">
+        <div className="flex flex-wrap items-center justify-between gap-2 bg-ink-50/60 px-3 py-2.5">
+          <div>
+            <p className="text-[13px] font-bold text-ink-800">{meta.title}</p>
+            <p className="text-[11px] text-ink-500">{meta.rule}</p>
+          </div>
+          <span className="pill border border-ink-200 bg-white text-ink-400">none in this formula</span>
+        </div>
+      </div>
+    );
+  }
   const meta = CLASS_META[klass];
   const failing = nutrients.filter((n) => n.meetsCompliance === false).length;
   const Status = failing > 0 ? ShieldAlert : ShieldCheck;
@@ -238,10 +253,9 @@ export default function NutritionWorksheet({ response }: Props) {
             Nutrition tab · totals → Daily Value → %DV → rounding → declared
           </h2>
           <p className="mt-1 max-w-2xl text-[12px] leading-relaxed text-ink-500">
-            Mirrors the source Excel “Nutrition” sheet. Each nutrient is the{" "}
-            <strong className="text-ink-700">sum across all ingredients</strong> (Formulation total),
-            divided by its Daily Value to get %DV, then rounded to the legal increment and grouped by{" "}
-            21 CFR 101.9(g) compliance class.
+            The same math as the source Excel “Nutrition” sheet: add each nutrient across all
+            ingredients, divide by its Daily Value for %DV, round to the legal increment, and group
+            by compliance class (21 CFR 101.9(g)).
           </p>
         </div>
         <span className="flex h-9 w-9 flex-shrink-0 items-center justify-center rounded-lg border border-ink-100 bg-ink-50 text-pg-blue-700">
@@ -261,9 +275,8 @@ export default function NutritionWorksheet({ response }: Props) {
       )}
 
       <p className="text-[11px] leading-relaxed text-ink-400">
-        Declared values use <strong className="text-ink-500">deterministic</strong> 101.9(c)
-        rounding (never a hand-picked “Reco.” cell). Vitamins/minerals print as % DV with the amount
-        as backup; the &lt; 2% “insignificant amount” statements are available but not auto-applied.
+        Rounding follows the fixed 21 CFR 101.9(c) increments — never a hand-picked “Reco.” cell.
+        Vitamins and minerals print as % Daily Value, with the amount alongside.
       </p>
     </section>
   );

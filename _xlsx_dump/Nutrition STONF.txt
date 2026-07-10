@@ -1,0 +1,168 @@
+A1: 'edit yellow/orange cells'
+C1: 'NOTE: RULES COPIED FROM THIS TAB!!!!'
+A2: 'Formulation'
+B2: 'STONF'
+D2: =A2&" "& B2  => 'Formulation STONF'
+G2: {=INDIRECT("'"&D2&"'!C7")}  => 5.8272
+H2: 'grams'
+I2: 'single dose'
+A3: ='Formulation STOF2'!B6  => 'Smooth Texture Sugar Free Orange Natural Dyes'
+D3: '1g =0.00220462lb'
+E3: '1g =0.035274oz'
+G3: {=INDIRECT("'"&D2&"'!D6")}  => 11.6544
+H3: 'grams'
+I3: 'double dose'
+A5: 'Calorie Rules'
+B5: 'B'
+C5: =(4*F24)+(4*C10)+(9*C31)  => 21.5806597924297
+D5: 'Calories'
+E5: 'Per 21 CFR 101.9 (c) (1) (i): part (B)'
+F5: 'Total Calories [Per 21 CFR 101.9 (c) (1) (i): part (B) – not using Total Fiber value] = (4 x Protein) + (4 x Total Carbohydrate) + (9 x Total Fat)'
+B6: 'C'
+C6: =(4*F24)+(9*C31)+(4*(C10-D10))+(2*D10)  => 16.112244738631297
+D6: 'Calories'
+E6: 'Per 21 CFR 101.9 (c) (1) (i): part (C)'
+F6: 'Total Calories [Per 21 CFR 101.9 (c) (1) (i): part (C) – do NOT have Soluble/Insoluble Fiber values, only Total Fiber] = (4 x Protein) + (9 x Total Fat) + [4 x (Total Carbohydrate – Total Fiber)] + [2 x Total Fiber]'
+B7: 'C+'
+C7: =(4*F24)+(9*C31)+(4*(C10-D10))+(2*E10)  => 15.244345929376898
+D7: 'Calories'
+E7: 'Per 21 CFR 101.9 (c) (1) (i): part (C)'
+F7: 'Total Calories [Per 21 CFR 101.9 (c) (1) (i): part (C) – have Soluble/Insoluble Fiber values] = (4 x Protein) + (9 x Total Fat) + [4 x (Total Carbohydrate – Total Fiber)] + [2 x Soluble Fiber]'
+A9: 'Class II  -  NLT 80% of Label'
+C9: {=INDIRECT("'"&D2&"'!K13")}  => 'Total carbohydrate'
+D9: {=INDIRECT("'"&D2&"'!L13")}  => 'Total dietary fiber'
+E9: {=INDIRECT("'"&D2&"'!M13")}  => 'Soluble fiber'
+B10: 'Totals'
+C10: {=INDIRECT("'"&D2&"'!K8")}  => 5.2370083490092805
+D10: {=INDIRECT("'"&D2&"'!L8")}  => 2.7342075268992
+E10: {=INDIRECT("'"&D2&"'!M8")}  => 2.300258122272
+B11: 'RDI'
+C11: 275
+D11: 28
+E11: 'NA'
+B12: '%RDI'
+C12: =C10/C11  => 0.01904366672367011
+D12: =D10/D11  => 0.09765026881782857
+E12: 'NA'
+C13: '< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 1g'
+D13: '< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 1g'
+E13: '- Label value  based on calculation of psyllium being 70% soluble fiber (3.4g psyllium * 0.70 = 2.4g)\n\n< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 0.5g'
+B14: 'Reco.'
+C14: '5g'
+D14: '3g'
+E14: '2g'
+A16: 'Class II  -  NLT 80% of Label'
+C16: 'Iron [Mandatory]'
+D16: 'Potassium [Mandatory]'
+E16: 'Calcium [Mandatory]'
+B17: 'Totals'
+C17: {=INDIRECT("'"&D2&"'!P8")}  => 0.26450765695392003
+D17: {=INDIRECT("'"&D2&"'!Q8")}  => 27.641746811217605
+E17: {=INDIRECT("'"&D2&"'!S8")}  => 5.916770200041602
+B18: 'RDI'
+C18: 18
+D18: 4700
+E18: 1300
+B19: '%RDI'
+C19: =C17/C18  => 0.014694869830773335
+D19: =D17/D18  => 0.00588122272579098
+E19: =E17/E18  => 0.004551361692339694
+C20: '<2% DV: shall not be declared \n> 2% DV: round to nearest 0.1 mg and round to nearest % DV'
+D20: '<2% DV: shall not be declared \n> 2% DV: round to nearest 10 mg and round to nearest % DV'
+E20: '<2% DV: shall not be declared \n> 2% DV: round to nearest 10 mg and round to nearest % DV'
+B21: 'Reco.'
+C21: '2% DV'
+D21: '30 mg'
+E21: 0
+A23: 'Class II  -  NLT 80% of Label'
+C23: 'Vitamin A [Voluntary]'
+D23: 'Vitamin C [Voluntary]'
+E23: 'Vitamin D [Mandatory]'
+F23: 'Protein'
+B24: 'Totals'
+C24: {=INDIRECT("'"&D2&"'!T8")}  => 0.38088820574208
+D24: {=INDIRECT("'"&D2&"'!U8")}  => 0.00012702829824
+E24: {=INDIRECT("'"&D2&"'!V8")}  => 0
+F24: {=INDIRECT("'"&D2&"'!W8")}  => 0.074137881883584
+B25: 'RDI'
+C25: '900 mcg RAE'
+D25: 90
+E25: '20 microgram'
+F25: 'NA'
+B26: '%RDI'
+C26: 'NA'
+D26: 'NA'
+E26: =E24/20  => 0
+F26: 'NA'
+C27: '<2% DV: shall not be declared \n> 2% DV: round to nearest 10 mcg RAE and round to nearest % DV'
+D27: '<2% DV: shall not be declared \n> 2% DV: round to nearest 1 mg and round to nearest % DV'
+E27: '<2% DV: shall not be declared \n> 2% DV: round to nearest 0.1 mcg and round to nearest % DV'
+F27: '< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 0.5g'
+B28: 'Reco.'
+C28: 'none'
+D28: 'none'
+E28: 0
+F28: '0g'
+A30: 'Third Group - NMT 120% of Label'
+C30: 'Total Fat'
+D30: 'Saturated Fat'
+E30: 'Trans Fat'
+F30: 'Cholesterol'
+B31: 'Totals'
+C31: {=INDIRECT("'"&D2&"'!G8")}  => 0.03734165209536001
+D31: {=INDIRECT("'"&D2&"'!H8")}  => 0.006194259523584001
+E31: {=INDIRECT("'"&D2&"'!I8")}  => 0
+F31: {=INDIRECT("'"&D2&"'!J8")}  => 0
+B32: 'RDI'
+C32: 78
+D32: 20
+E32: 'NA'
+F32: '300 mg'
+B33: '%RDI'
+C33: 'NA'
+D33: 'NA'
+E33: 'NA'
+F33: 'NA'
+C34: '< 0.5g - express as 0\n< 5 g - nearest 0.5 g increment\n> 5 g: nearest 1 g increment\n'
+D34: '< 0.5g - express as 0\n< 5 g - nearest 0.5 g increment\n> 5 g: nearest 1 g increment\n'
+E34: '< 0.5g - express as 0\n< 5 g - nearest 0.5 g increment\n> 5 g: nearest 1 g increment\n'
+F34: '< 2mg: express as 0\n2-5 mg: "less than 5 mg"\n> 5 mg: 5 mg increment'
+B35: 'Reco.'
+C35: 'none'
+D35: 'none'
+E35: 'none'
+F35: 'none'
+A37: 'Third Group - NMT 120% of Label'
+C37: {=INDIRECT("'"&D2&"'!E13")}  => 'Calories (US Rules)'
+D37: 'Calories from Fat'
+E37: {=INDIRECT("'"&D2&"'!N13")}  => 'Sugar '
+F37: {=INDIRECT("'"&D2&"'!O13")}  => 'Added Sugars'
+G37: {=INDIRECT("'"&D2&"'!R13")}  => 'Sodium'
+B38: 'Totals'
+C38: =C7  => 15.244345929376898
+D38: {=INDIRECT("'"&D2&"'!F8")}  => 0.18050563868812802
+E38: {=INDIRECT("'"&D2&"'!N8")}  => 0.11418552529440001
+F38: {=INDIRECT("'"&D2&"'!O8")}  => 0.045741932088
+G38: {=INDIRECT("'"&D2&"'!R8")}  => 5.177364288734401
+C39: 'NA'
+D39: 'NA'
+E39: 'NA'
+F39: 50
+G39: 2300
+B40: '%RDI'
+C40: 'NA'
+D40: 'NA'
+E40: 'NA'
+F40: =F38/F39  => 0.00091483864176
+G40: =G38/G39  => 0.0022510279516236523
+C41: '< 5 cal - express as 0\n≤ 50 cal - express to nearest 5 cal increment\n> 50 cal - express to nearest 10 cal increment\nInsignificant amount is < 5 cal'
+D41: 'Not required to be declared'
+E41: '< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 0.5g'
+F41: '< 0.5g - express as 0\n< 1g - express as "contains less than 1g" or "less than 1g"\n≥1g - express to nearest 1g increment\nInsignificant amount is < 0.5g'
+G41: '< 5mg - express as 0\n5-140mg - express to nearest 5mg increment\n> 140mg - express to nearest 10mg increment\nInsignificant amount is < 5mg'
+B42: 'Reco.'
+C42: '15kCal'
+D42: 'none'
+E42: 0
+F42: 0
+G42: '5mg'

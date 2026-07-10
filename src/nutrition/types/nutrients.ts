@@ -54,7 +54,11 @@ export type AmountRoundingGroup =
   | "cholesterol"
   | "sodium"
   | "gram1"
-  | "vitaminMineralAmount";
+  | "vitaminMineralAmount"
+  // Per-nutrient micronutrient increments from the template's "Nutrition" tab.
+  | "microNearestTenth"
+  | "microNearestOne"
+  | "microNearestTen";
 
 export type NutrientKind = "macro" | "vitaminMineral";
 

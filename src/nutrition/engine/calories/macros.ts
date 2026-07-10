@@ -6,5 +6,4 @@ export interface MacroGrams {
   totalFat: number;
   dietaryFiber: number;
   solubleFiber: number;
-  sugarAlcohol: number;
 }

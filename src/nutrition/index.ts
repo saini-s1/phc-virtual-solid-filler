@@ -1,3 +1,6 @@
+// Public API for the nutrition engine. The UI (NutritionApp.tsx) imports ONLY from
+// this file — it never reaches into engine internals directly. All types the UI needs
+// are re-exported below so callers have a single stable import point.
 import type { CalcRequest } from "./types/inputs";
 import type { CalcResponse } from "./types/results";
 import { getRegion } from "./config/regions";

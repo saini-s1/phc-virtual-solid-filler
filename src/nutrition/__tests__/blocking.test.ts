@@ -21,9 +21,9 @@ describe("blocking — INGREDIENT_INCOMPLETE", () => {
 });
 
 describe("blocking — METHOD_C_FIBER_SPLIT_MISSING", () => {
-  it("fires under Method C when a fiber source has no soluble split, naming the ingredient", () => {
+  it("fires under Method C+ when a fiber source has no soluble split, naming the ingredient", () => {
     const req: CalcRequest = structuredClone(exampleProduct);
-    req.calorieMethod = "C";
+    req.calorieMethod = "C+";
     // Remove psyllium's soluble fiber entry; it still declares 84 g dietary fiber.
     const psyllium = req.ingredients.find((i) => i.id === "psyllium");
     if (psyllium) {

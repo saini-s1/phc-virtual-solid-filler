@@ -86,21 +86,19 @@ const TOPICS: Topic[] = [
     body: (
       <div className="flex flex-col gap-3 text-[13px] leading-relaxed text-ink-600">
         <p>
-          You give it a <strong className="text-ink-800">formulation</strong>: a list of
-          ingredients, each ingredient's nutrient content per 100 g, and how much of each goes
-          into the blend (% by weight), plus a <strong className="text-ink-800">dose weight</strong>{" "}
-          (grams per serving). It returns an FDA-style <strong className="text-ink-800">Nutrition
-          Facts panel</strong> for one serving.
+          You give it a <strong className="text-ink-800">formulation</strong> — the ingredients,
+          each ingredient's nutrients per 100 g, how much of each is in the blend (% by weight), and
+          the <strong className="text-ink-800">dose weight</strong> (grams per serving). It returns a
+          Nutrition Facts panel for one serving.
         </p>
         <p>
-          Internally it walks a fixed path: sum each nutrient across the recipe → carry it through
-          a four-stage value pipeline → round each number to the legal increment → compute % Daily
-          Value → assign a compliance class. The center label, the right-hand results, and the audit
-          trail above all read the same structured result.
+          It follows one fixed path: add up each nutrient across the recipe, round it to the legal
+          increment, work out the % Daily Value, and check it against its compliance limit. The
+          label, the results panel, and the audit trail all read the same result.
         </p>
         <p className="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-[12px] text-amber-900">
-          <strong>Prototype.</strong> The logic mirrors the source Excel and 21 CFR 101.9, but the
-          outputs are illustrative, not a validated label, and not verified against lab assays.
+          <strong>Prototype.</strong> The logic follows the source Excel and 21 CFR 101.9. Treat the
+          output as illustrative — confirm it in the controlled labeling system before any real use.
         </p>
       </div>
     ),
@@ -108,7 +106,7 @@ const TOPICS: Topic[] = [
   {
     id: "calories",
     icon: Flame,
-    eyebrow: "The B / C / D question",
+    eyebrow: "The B / C / C+ question",
     title: "How calories are calculated, and why the methods disagree",
     body: (
       <div className="flex flex-col gap-3">
@@ -121,14 +119,25 @@ const TOPICS: Topic[] = [
         </p>
 
         <div className="grid gap-2.5 sm:grid-cols-3">
-          <MethodCard badge="D" name="US Rules" result="40" accent="bg-pg-blue-600">
+          <MethodCard badge="C+" name="Soluble split" result="25" accent="bg-pg-cyan-500">
             <p>
-              Sums each ingredient's supplier <strong>"kCal (US Rules)"</strong> factor over the
-              dose (the Excel's own calorie column).
+              Removes non-digestible fiber from the carb base, then credits{" "}
+              <strong>soluble</strong> fiber at 2 cal/g. The value the workbook declares.
             </p>
-            <Calc>Σ(kcal₁₀₀g × dose/100) = 38.37 → 40</Calc>
+            <Calc>4(0.14) + 4(9.48−5.48) + 2(4.66) = 25.9 → 25</Calc>
             <p className="text-ink-400">
-              <Cite>101.9(c)(1)(i)(D)</Cite> · <strong className="text-ink-600">default</strong>
+              <Cite>101.9(c)(1)(i)(C)</Cite> · <strong className="text-ink-600">default</strong>
+            </p>
+          </MethodCard>
+
+          <MethodCard badge="C" name="Total fiber" result="30" accent="bg-pg-blue-600">
+            <p>
+              Same idea, but credits <strong>total</strong> dietary fiber at 2 cal/g — used when no
+              soluble/insoluble split is available.
+            </p>
+            <Calc>4(0.14) + 4(9.48−5.48) + 2(5.48) = 27.5 → 30</Calc>
+            <p className="text-ink-400">
+              <Cite>101.9(c)(1)(i)(C)</Cite>
             </p>
           </MethodCard>
 
@@ -139,29 +148,17 @@ const TOPICS: Topic[] = [
               <Cite>101.9(c)(1)(i)(B)</Cite>
             </p>
           </MethodCard>
-
-          <MethodCard badge="C" name="Fiber-adjusted" result="25" accent="bg-pg-cyan-500">
-            <p>
-              Removes non-digestible fiber from the carb base, then credits soluble fiber at just
-              2 cal/g.
-            </p>
-            <Calc>4(0.14) + 4(9.48−5.48) + 2(4.66) = 25.9 → 25</Calc>
-            <p className="text-ink-400">
-              <Cite>101.9(c)(1)(i)(C)</Cite>
-            </p>
-          </MethodCard>
         </div>
 
         <div className="rounded-lg border border-pg-blue-100 bg-pg-blue-50/50 px-3 py-2.5 text-[12px] leading-relaxed text-ink-700">
-          <strong className="text-pg-blue-700">Why D = B = 40 but C = 25:</strong> psyllium is almost
-          entirely fiber. Methods B and D treat that carbohydrate at ≈ 4 cal/g; Method C re-credits
-          the ~5.5 g of (mostly soluble) fiber at 2 cal/g and drops the non-digestible part from the
-          carb calories, knocking ~15 cal off. The difference <em>is</em> the fiber.
+          <strong className="text-pg-blue-700">Why B = 40 but C+ = 25:</strong> psyllium is almost
+          entirely fiber. Method B treats that carbohydrate at ≈ 4 cal/g; Methods C and C+ drop the
+          non-digestible part from the carb calories and re-credit fiber at just 2 cal/g — C on the
+          full ~5.5 g of fiber, C+ on the ~4.66 g that is soluble. The difference <em>is</em> the fiber.
         </div>
         <p className="text-[12px] leading-relaxed text-ink-500">
-          We default to <strong>D</strong> because it reproduces the source Excel exactly. B and C
-          are shown beside the Calories line as permitted cross-checks so you can see all three at
-          once.
+          We default to <strong>C+</strong> because it is the value the source Excel declares. C and
+          B sit beside the Calories line as permitted cross-checks, so you can see all three at once.
         </p>
       </div>
     ),
@@ -283,67 +280,50 @@ const TOPICS: Topic[] = [
     body: (
       <div className="flex flex-col gap-3">
         <p className="text-[13px] leading-relaxed text-ink-600">
-          Two P&amp;G PHC standards sit on top of 21 CFR here. The rule of thumb from the SOPs
-          themselves: <strong className="text-ink-800">OH-234 affects the math; OH-222 affects the
-          output format / process.</strong> We map each honestly, modelling what the engine
-          enforces and naming the gaps.
+          Two P&amp;G PHC standards sit on top of 21 CFR. The short version:{" "}
+          <strong className="text-ink-800">OH-234 is about the math; OH-222 is about the format and
+          sign-off.</strong>
         </p>
 
         <div className="rounded-xl border border-emerald-200 bg-emerald-50/60 p-4">
           <div className="flex items-center justify-between gap-2">
             <span className="text-[13px] font-bold text-emerald-800">
-              OH-234 · Dietary ingredient overages <span className="font-mono font-normal opacity-70">VV-QUAL-2019440</span>
+              OH-234 · Overages <span className="font-mono font-normal opacity-70">VV-QUAL-2019440</span>
             </span>
             <span className="pill border border-emerald-300 bg-white text-emerald-700">
               <ShieldCheck className="h-3 w-3" aria-hidden="true" />
-              Class limits + declare-down wired
+              Wired
             </span>
           </div>
           <p className="mt-2 text-[12px] leading-relaxed text-emerald-900/90">
-            <strong>Implemented.</strong> The three US compliance classes are enforced exactly as the
-            SOP states: Class I (added/synthetic) ≥ 100%, Class II (naturally occurring) ≥ 80%,
-            third group (present, not intentionally added) ≤ 120%. The pipeline carries the SOP's
-            three values (as-formulated → as-declared → end-of-shelf-life) and declares down:
+            The three compliance classes are enforced, and the label declares down from the
+            formulated amount:
           </p>
           <Calc>as-declared = as-formulated ÷ (1 + overage)</Calc>
           <p className="mt-2 text-[12px] leading-relaxed text-emerald-900/90">
-            The engine <strong>requires an explicit overage decision for every floor (Class I/II)
-            nutrient</strong>. A missing value hard-blocks the label (<Cite>OVERAGE_MISSING</Cite>),
-            never silently assumed. Third-group ceiling nutrients are exempt (no formulated overage
-            required). For Irovy Orange the Excel carries 0% overage, so this stage is a deliberate
-            no-op and label parity holds.
-          </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-emerald-900/90">
-            <strong>The honest gap:</strong> the SOP's overage <em>derivation</em> formula{" "}
-            <span className="font-mono">(ΔX + ΔY + CI·√Σσ²)</span> from stability/process/variance
-            data is <strong>not</strong> computed; overage is taken as a per-nutrient input. We do
-            not invent overage constants; supply ΔX/ΔY/σ and that math can be added in the same
-            isolated module.
+            Every floor (Class I/II) nutrient needs an explicit overage; a missing one hard-blocks
+            the label (<Cite>OVERAGE_MISSING</Cite>) rather than being guessed. What's{" "}
+            <strong>not</strong> done: deriving that overage from stability data{" "}
+            <span className="font-mono">(ΔX + ΔY + CI·√Σσ²)</span> — it is taken as an input.
           </p>
         </div>
 
         <div className="rounded-xl border border-amber-300 bg-amber-50/60 p-4">
           <div className="flex items-center justify-between gap-2">
             <span className="text-[13px] font-bold text-amber-800">
-              OH-222 · Technical content for labeling <span className="font-mono font-normal opacity-70">VV-QUAL-569949</span>
+              OH-222 · Labeling content <span className="font-mono font-normal opacity-70">VV-QUAL-569949</span>
             </span>
             <span className="pill border border-amber-300 bg-white text-amber-700">
               <Info className="h-3 w-3" aria-hidden="true" />
-              Content surfaced · governance not gated
+              Content shown · sign-off not gated
             </span>
           </div>
           <p className="mt-2 text-[12px] leading-relaxed text-amber-900/90">
-            OH-222 is <strong>process/governance only; it contains no formulas or rounding tables</strong>.
-            It governs the non-discretionary, formulation-inherent content on a label, and the engine{" "}
-            <strong>does surface all of it</strong>: serving info, ingredient list, dosing, and
-            cation/nutrient content. The rounding the SOP says Regulatory owns is applied from the
-            21 CFR tables (OH-222 points to the CFR for the rules, exactly as we do).
-          </p>
-          <p className="mt-2 text-[12px] leading-relaxed text-amber-900/90">
-            <strong>What's not modeled</strong> is the governance wrapper around that content: a
-            P&amp;F/MPD Band-3 + Regulatory approver sign-off, version metadata, FOP linkage, and the
-            Enovia IRM storage stamp. The audit trail is adjacent traceability, but a formal
-            review → approve → e-signature → lock gate is a prototype stub, not an enforced step.
+            OH-222 is process only — no formulas. The engine surfaces the content it governs
+            (serving info, ingredients, dosing, nutrient content) and rounds using the 21 CFR tables.
+            What's <strong>not</strong> modeled is the approval wrapper: a Band-3 + Regulatory
+            sign-off, version metadata, and the Enovia lock. The audit trail is traceability, not a
+            formal e-signature gate.
           </p>
         </div>
       </div>
@@ -378,8 +358,8 @@ const TOPICS: Topic[] = [
     body: (
       <div className="flex flex-col gap-3">
         <p className="text-[13px] leading-relaxed text-ink-600">
-          Where the source workbook gives a number, we use it verbatim (the Method-D calorie column,
-          every per-ingredient nutrient value, the % w/w recipe). The few things the Excel{" "}
+          Where the source workbook gives a number, we use it verbatim (the declared calorie value,
+          every per-ingredient nutrient, the % w/w recipe). The few things the Excel{" "}
           <em>doesn't</em> provide were added only to make the label legal and reproducible, each
           with a reason:
         </p>
@@ -411,11 +391,11 @@ const TOPICS: Topic[] = [
                 </td>
               </tr>
               <tr>
-                <td className="px-3 py-2 font-medium text-ink-800">Calorie Methods B &amp; C</td>
+                <td className="px-3 py-2 font-medium text-ink-800">Calorie cross-checks (C, B)</td>
                 <td className="px-3 py-2 leading-relaxed">
-                  Not in the Excel (which uses D). Added as permitted alternates{" "}
-                  <Cite>101.9(c)(1)(i)(B)/(C)</Cite> so a formulator can see the fiber-adjusted view.
-                  D stays the declared default to match the workbook.
+                  The workbook declares C+ (soluble-fiber method). We also show C and B{" "}
+                  <Cite>101.9(c)(1)(i)(B)/(C)</Cite> beside it as permitted cross-checks, so a
+                  formulator can compare all three at once.
                 </td>
               </tr>
               <tr>

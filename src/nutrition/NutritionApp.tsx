@@ -1,3 +1,6 @@
+// Root shell for the Nutrition Calculator tab. Owns the single mutable CalcRequest
+// (the user's formulation) and the derived CalcResponse (everything the engine computed).
+// Passes slices of both down to pure-render panels; no nutrient math lives here.
 import { useMemo, useRef, useState } from "react";
 import { Apple } from "lucide-react";
 import Header from "../shared/Header";
@@ -9,6 +12,7 @@ import NutritionTutorial from "./components/NutritionTutorial";
 import { calcNutritionPanel } from "./index";
 import type { CalcRequest, CalorieMethod, Completeness, Ingredient, NutrientId } from "./index";
 import { exampleProduct, blankProduct, makeBlankIngredient } from "./data/exampleProduct";
+import { INGREDIENT_LIBRARY, libraryToIngredient } from "./data/ingredientLibrary";
 
 type Props = {
   onBack: () => void;
@@ -52,12 +56,29 @@ export default function NutritionApp({ onBack }: Props) {
   const [runId, setRunId] = useState(0);
   const newIdSeq = useRef(0);
 
+  // Optional second dose column (common on US supplement labels, e.g. "per 1" vs "per 2").
+  // It is just a second engine run at a different serving weight; the same recipe scales
+  // linearly, so the math travels correctly without touching the engine.
+  const [secondDoseEnabled, setSecondDoseEnabled] = useState(false);
+  const [secondDoseWeightG, setSecondDoseWeightG] = useState(() => exampleProduct.servingWeightG * 2);
+
   // Single source of truth: the engine recomputes whenever the request changes.
   const response = useMemo(() => calcNutritionPanel(request), [request]);
 
+  // Second dose = the identical formulation recomputed at a different serving weight.
+  const response2 = useMemo(
+    () =>
+      secondDoseEnabled
+        ? calcNutritionPanel({ ...request, servingWeightG: secondDoseWeightG })
+        : null,
+    [secondDoseEnabled, secondDoseWeightG, request],
+  );
+
   const handleLoadPreset = (id: PresetId) => {
     setPreset(id);
-    setRequest(structuredClone(id === "blank" ? blankProduct : exampleProduct));
+    const next = structuredClone(id === "blank" ? blankProduct : exampleProduct);
+    setRequest(next);
+    setSecondDoseWeightG(Number((next.servingWeightG * 2).toFixed(2)));
     setRunId((n) => n + 1);
   };
 
@@ -108,6 +129,20 @@ export default function NutritionApp({ onBack }: Props) {
       ingredients: prev.ingredients.filter((ing) => ing.id !== ingredientId),
       recipe: prev.recipe.filter((line) => line.ingredientId !== ingredientId),
     }));
+
+  // Add a saved supplier ingredient from the library. Builds a fresh instance id so the
+  // same library entry can be added multiple times; enters the recipe at 0 %w/w.
+  const handleAddFromLibrary = (libId: string) =>
+    setRequest((prev) => {
+      const lib = INGREDIENT_LIBRARY.find((l) => l.id === libId);
+      if (!lib) return prev;
+      const id = `custom-${Date.now()}-${(newIdSeq.current += 1)}`;
+      return {
+        ...prev,
+        ingredients: [...prev.ingredients, libraryToIngredient(lib, id)],
+        recipe: [...prev.recipe, { ingredientId: id, percentWW: 0 }],
+      };
+    });
 
   const handleRenameIngredient = (ingredientId: string, name: string) =>
     setRequest((prev) => ({
@@ -160,16 +195,26 @@ export default function NutritionApp({ onBack }: Props) {
               onPercentChange={handlePercentChange}
               onCycleCompleteness={handleCycleCompleteness}
               onAddIngredient={handleAddIngredient}
+              onAddFromLibrary={handleAddFromLibrary}
               onRemoveIngredient={handleRemoveIngredient}
               onRenameIngredient={handleRenameIngredient}
               onNutrientChange={handleNutrientChange}
               onCaloriesChange={handleCaloriesChange}
               onRun={handleRun}
+              secondDoseEnabled={secondDoseEnabled}
+              secondDoseWeightG={secondDoseWeightG}
+              onToggleSecondDose={setSecondDoseEnabled}
+              onSecondDoseWeightChange={setSecondDoseWeightG}
             />
           </div>
-          <div className="flex w-full flex-col gap-5 lg:max-w-[600px]">
+          <div
+            className={`flex w-full flex-col gap-5 ${
+              secondDoseEnabled ? "lg:max-w-[680px]" : "lg:max-w-[600px]"
+            }`}
+          >
             <NutritionFactsLabel
               response={response}
+              response2={response2}
               onMethodChange={handleMethodChange}
               runId={runId}
             />

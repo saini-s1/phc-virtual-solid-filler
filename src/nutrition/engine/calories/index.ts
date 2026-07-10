@@ -4,20 +4,19 @@ import type { CalorieResult, CalorieComparison } from "../../types/results";
 import type { NutrientTotals } from "../recipe";
 import type { MacroGrams } from "./macros";
 import { caloriesMethodB } from "./methodB";
-import { caloriesMethodC } from "./methodC";
+import { caloriesMethodC, caloriesMethodCPlus } from "./methodC";
 import { roundByGroup } from "../../rounding/rounding";
 
+// Citation strings for the three methods the workbook implements. C and C+ share the same
+// regulatory part (C); they differ only by the fiber data available.
 export const CALORIE_CITATION: Record<CalorieMethod, string> = {
-  A: "101.9(c)(1)(i)(A)",
   B: "101.9(c)(1)(i)(B)",
   C: "101.9(c)(1)(i)(C)",
-  D: "101.9(c)(1)(i)(D)",
-  E: "101.9(c)(1)(i)(E)",
-  F: "101.9(c)(1)(i)(F)",
+  "C+": "101.9(c)(1)(i)(C)",
 };
 
-// D first: "US Rules" supplier factors are the Excel's own calorie path and the default.
-export const IMPLEMENTED_METHODS: CalorieMethod[] = ["D", "B", "C"];
+// Order matters for display: C+ is the workbook's declared value, then C and B cross-checks.
+export const IMPLEMENTED_METHODS: CalorieMethod[] = ["C+", "C", "B"];
 
 export function macrosFromTotals(totals: NutrientTotals): MacroGrams {
   return {
@@ -26,29 +25,13 @@ export function macrosFromTotals(totals: NutrientTotals): MacroGrams {
     totalFat: totals.get("totalFat") ?? 0,
     dietaryFiber: totals.get("dietaryFiber") ?? 0,
     solubleFiber: totals.get("solubleFiber") ?? 0,
-    sugarAlcohol: totals.get("sugarAlcohol") ?? 0,
   };
 }
 
-interface UnroundedCalories {
-  kcal: number;
-  flags: string[];
-  implemented: boolean;
-}
-
-function unroundedFor(
-  method: CalorieMethod,
-  m: MacroGrams,
-  usRulesCalories: number,
-): UnroundedCalories {
-  // Method D = the Excel's path: sum of per-ingredient "kCal (US Rules)" supplier factors.
-  if (method === "D") return { kcal: usRulesCalories, flags: [], implemented: true };
-  if (method === "B") return { kcal: caloriesMethodB(m), flags: [], implemented: true };
-  if (method === "C") {
-    const c = caloriesMethodC(m);
-    return { kcal: c.kcal, flags: c.flags, implemented: true };
-  }
-  return { kcal: 0, flags: [`Calorie method ${method} is not implemented in v1.`], implemented: false };
+function unroundedFor(method: CalorieMethod, m: MacroGrams): number {
+  if (method === "B") return caloriesMethodB(m);
+  if (method === "C") return caloriesMethodC(m);
+  return caloriesMethodCPlus(m); // "C+"
 }
 
 function roundedKcal(kcal: number, region: RegionConfig): number {
@@ -56,54 +39,45 @@ function roundedKcal(kcal: number, region: RegionConfig): number {
   return typeof r === "number" ? r : 0;
 }
 
-export interface ComputeCaloriesResult {
-  result: CalorieResult;
-  flags: string[];
-}
-
 /**
- * Compute calories for the active method, round per region calorie tiers, and attach
- * the alternate declaration (FLAG 1): when C is active show B, and vice-versa.
+ * Compute calories for the active method, round per region calorie tiers, and attach an
+ * alternate declaration for contrast: C+ ↔ C (the fiber-data pairing), B ↔ C+.
  */
 export function computeCalories(
   method: CalorieMethod,
   totals: NutrientTotals,
   region: RegionConfig,
-  usRulesCalories: number,
-): ComputeCaloriesResult {
+): CalorieResult {
   const m = macrosFromTotals(totals);
-  const active = unroundedFor(method, m, usRulesCalories);
 
-  // Alternate = the single most informative contrast. C↔B is the legacy pairing; the
-  // Excel default D contrasts against C (the 40-vs-25 fiber story).
+  // Alternate = the single most informative contrast. C+ (soluble split) vs C (total fiber)
+  // is the workbook's own fiber pairing; B (legacy 4/4/9) contrasts against C+.
   let alternate: CalorieResult["alternate"] = null;
   const altMethod: CalorieMethod | null =
-    method === "C" ? "B" : method === "B" ? "C" : method === "D" ? "C" : null;
+    method === "C+" ? "C" : method === "C" ? "B" : method === "B" ? "C+" : null;
   if (altMethod) {
-    const alt = unroundedFor(altMethod, m, usRulesCalories);
-    alternate = { method: altMethod, value: roundedKcal(alt.kcal, region), unrounded: alt.kcal };
+    const altKcal = unroundedFor(altMethod, m);
+    alternate = { method: altMethod, value: roundedKcal(altKcal, region), unrounded: altKcal };
   }
 
-  // All implemented methods, side by side (D/B/C) — pure data the UI can render as-is.
+  // All three workbook methods, side by side (C+/C/B) — pure data the UI can render as-is.
   const comparisons: CalorieComparison[] = IMPLEMENTED_METHODS.map((mth) => {
-    const u = unroundedFor(mth, m, usRulesCalories);
+    const kcal = unroundedFor(mth, m);
     return {
       method: mth,
-      value: roundedKcal(u.kcal, region),
-      unrounded: u.kcal,
+      value: roundedKcal(kcal, region),
+      unrounded: kcal,
       citation: CALORIE_CITATION[mth],
-      implemented: u.implemented,
     };
   });
 
-  const result: CalorieResult = {
+  const activeKcal = unroundedFor(method, m);
+  return {
     method,
-    methodImplemented: active.implemented,
-    value: roundedKcal(active.kcal, region),
-    unrounded: active.kcal,
+    value: roundedKcal(activeKcal, region),
+    unrounded: activeKcal,
     alternate,
     comparisons,
     citation: CALORIE_CITATION[method],
   };
-  return { result, flags: active.flags };
 }

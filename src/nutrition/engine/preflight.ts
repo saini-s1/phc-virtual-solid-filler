@@ -28,15 +28,17 @@ export function preflight(req: CalcRequest, region: RegionConfig): BlockingIssue
     });
   }
 
-  // (b) METHOD_C_FIBER_SPLIT_MISSING — Method C needs a soluble-fiber split per fiber source.
-  if (req.calorieMethod === "C") {
+  // (b) METHOD_C_FIBER_SPLIT_MISSING — Method C+ needs a soluble-fiber split per fiber source.
+  //     Plain Method C (total fiber at 2 kcal/g) has no such requirement; switch to C when a
+  //     split is unavailable. No heuristic fallback is applied.
+  if (req.calorieMethod === "C+") {
     const fiber = validateFiberSplit(req);
     if (!fiber.ok) {
       issues.push({
         code: "METHOD_C_FIBER_SPLIT_MISSING",
         message:
-          "Calorie Method C requires a soluble/insoluble fiber split for every ingredient " +
-          "that declares dietary fiber. No heuristic fallback is applied.",
+          "Calorie Method C+ requires a soluble/insoluble fiber split for every ingredient " +
+          "that declares dietary fiber. Use Method C (total fiber at 2 kcal/g) when no split exists.",
         offenders: fiber.offenders,
       });
     }

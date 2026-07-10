@@ -19,9 +19,9 @@ describe("fiber.computed", () => {
     expect(soluble?.stages.raw).toBeCloseTo(4.6600638, 9);
   });
 
-  it("removing the only soluble split blocks Method C (no heuristic fallback)", () => {
+  it("removing the only soluble split blocks Method C+ (no heuristic fallback)", () => {
     const req: CalcRequest = structuredClone(exampleProduct);
-    req.calorieMethod = "C";
+    req.calorieMethod = "C+";
     const psyllium = req.ingredients.find((i) => i.id === "psyllium");
     if (psyllium) {
       psyllium.nutrients = psyllium.nutrients.filter((n) => n.nutrientId !== "solubleFiber");

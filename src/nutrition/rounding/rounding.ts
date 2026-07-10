@@ -14,7 +14,10 @@ export interface RoundingOutcome {
 export function roundToIncrement(value: number, inc: number): number {
   const q = value / inc;
   const r = Math.sign(q) * Math.round(Math.abs(q) + 1e-9);
-  const out = r * inc;
+  // Multiplying back can reintroduce float noise (e.g. 3 * 0.1 = 0.30000000000000004);
+  // snap to the increment's own decimal precision to keep declared amounts clean.
+  const decimals = (String(inc).split(".")[1] ?? "").length;
+  const out = decimals > 0 ? Number((r * inc).toFixed(decimals)) : r * inc;
   return Object.is(out, -0) ? 0 : out;
 }
 

@@ -1,0 +1,285 @@
+A2: 'STONF'
+E2: 'with'
+F2: 'Saguaro'
+A3: 'Formulation'
+B3: =A3&" " &A2  => 'Formulation STONF'
+G3: =A3&" " &F2  => 'Formulation Saguaro'
+A4: 'Nutrition'
+B4: =A4&" " &A2  => 'Nutrition STONF'
+G4: =A4&" " &F2  => 'Nutrition Saguaro'
+A5: =VLOOKUP(A2,Ingredients!$A$33:$B$54,2,0)  => 'Smooth Texture Sugar Free Natural Orange'
+F5: =VLOOKUP(F2,Ingredients!$A$33:$B$54,2,0)  => 'Smooth Texture Sugar Free Natural Orange NO DYES'
+A6: 'Formula'
+F6: 'Formula'
+A7: 'Ingredients'
+B7: 'Weight %'
+C7: 'GCAS'
+F7: 'Ingredients'
+G7: 'Weight %'
+H7: 'GCAS'
+A8: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA28B0E0>
+B8: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBBBA5D0>
+C8: =VLOOKUP(A8,Ingredients!$A$3:$D$33,4,0)  => 10047885
+F8: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBBBA710>
+G8: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBBB5E00>
+H8: =VLOOKUP(F8,Ingredients!$A$3:$D$33,4,0)  => 10047885
+A9: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBBB5F30>
+B9: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFA44D0>
+C9: =VLOOKUP(A9,Ingredients!$A$3:$D$33,4,0)  => '10046056 or 10046057'
+F9: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFAC270>
+G9: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFAC380>
+H9: =VLOOKUP(F9,Ingredients!$A$3:$D$33,4,0)  => '10046056 or 10046057'
+A10: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB3DC50>
+B10: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB3DD50>
+C10: =VLOOKUP(A10,Ingredients!$A$3:$D$33,4,0)  => 10045074
+F10: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB31A90>
+G10: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB31B80>
+H10: =VLOOKUP(F10,Ingredients!$A$3:$D$33,4,0)  => 10045074
+A11: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA36A970>
+B11: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA36AB30>
+C11: =VLOOKUP(A11,Ingredients!$A$3:$D$33,4,0)  => 91400073
+F11: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBBCB2B0>
+G11: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA37D190>
+H11: =VLOOKUP(F11,Ingredients!$A$3:$D$33,4,0)  => 91400073
+A12: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA37DFD0>
+B12: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB5EC50>
+C12: =VLOOKUP(A12,Ingredients!$A$3:$D$33,4,0)  => 21346854
+F12: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB5EDB0>
+G12: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA34AE90>
+H12: =VLOOKUP(F12,Ingredients!$A$3:$D$33,4,0)  => 21346854
+A13: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA34AF30>
+B13: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDA34DC70>
+C13: =VLOOKUP(A13,Ingredients!$A$3:$D$33,4,0)  => 91564541
+F13: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBC3BAD0>
+G13: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBC3BA50>
+H13: =VLOOKUP(F13,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A14: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFA3540>
+B14: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFA35B0>
+C14: =VLOOKUP(A14,Ingredients!$A$3:$D$33,4,0)  => 91564539
+F14: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86B70>
+G14: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86BD0>
+H14: =VLOOKUP(F14,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A15: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86C90>
+B15: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86CF0>
+C15: =VLOOKUP(A15,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F15: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86DB0>
+G15: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86E10>
+H15: =VLOOKUP(F15,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A16: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86ED0>
+B16: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86F30>
+C16: =VLOOKUP(A16,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F16: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB86FF0>
+G16: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87050>
+H16: =VLOOKUP(F16,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A17: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87110>
+B17: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87170>
+C17: =VLOOKUP(A17,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F17: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87230>
+G17: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87290>
+H17: =VLOOKUP(F17,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A18: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87350>
+B18: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB873B0>
+C18: =VLOOKUP(A18,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F18: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87470>
+G18: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB874D0>
+H18: =VLOOKUP(F18,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A19: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87590>
+B19: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB875F0>
+C19: =VLOOKUP(A19,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F19: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB876B0>
+G19: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87710>
+H19: =VLOOKUP(F19,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+A20: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB877D0>
+B20: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87830>
+C20: =VLOOKUP(A20,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+F20: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB878F0>
+G20: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87950>
+H20: =VLOOKUP(F20,Ingredients!$A$3:$D$33,4,0)  => '#N/A'
+B21: =SUM(B8:B20)  => 0.9999999999999999
+G21: =SUM(G8:G20)  => 0.9998999999999999
+A22: 'Dose Size'
+B22: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87A10>
+C22: 'g'
+F22: 'Dose Size'
+G22: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87A70>
+H22: 'g'
+A23: 'Nutrition'
+C23: 'units'
+D23: 'label rec'
+F23: 'Nutrition'
+H23: 'units'
+I23: 'label rec'
+A24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87AD0>
+B24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87B30>
+C24: 'g'
+D24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87B90>
+F24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87BF0>
+G24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87C50>
+H24: 'g'
+I24: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87CB0>
+A25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87D10>
+B25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87D70>
+C25: 'g'
+D25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87DD0>
+F25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87E30>
+G25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87E90>
+H25: 'g'
+I25: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBB87EF0>
+A26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC110>
+B26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC170>
+C26: 'g'
+D26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC1D0>
+F26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC230>
+G26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC290>
+H26: 'g'
+I26: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC2F0>
+A27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC350>
+B27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC3B0>
+C27: 'mg'
+D27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC410>
+F27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC470>
+G27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC4D0>
+H27: 'mg'
+I27: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC530>
+A28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC590>
+B28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC5F0>
+C28: 'mg'
+D28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC650>
+F28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC6B0>
+G28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC710>
+H28: 'mg'
+I28: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC770>
+A29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC7D0>
+B29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC830>
+C29: 'mg'
+D29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC890>
+F29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC8F0>
+G29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC950>
+H29: 'mg'
+I29: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBC9B0>
+A30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCA10>
+B30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCA70>
+C30: 'IU'
+D30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCAD0>
+F30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCB30>
+G30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCB90>
+H30: 'IU'
+I30: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCBF0>
+A31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCC50>
+B31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCCB0>
+C31: 'mg'
+D31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCD10>
+F31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCD70>
+G31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCDD0>
+H31: 'mg'
+I31: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCE30>
+A32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCE90>
+B32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCEF0>
+C32: 'mcg'
+D32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCF50>
+F32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBCFB0>
+G32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD010>
+H32: 'mcg'
+I32: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD070>
+A33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD0D0>
+B33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD130>
+C33: 'mg'
+D33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD190>
+F33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD1F0>
+G33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD250>
+H33: 'mg'
+I33: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD2B0>
+A34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD310>
+B34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD370>
+C34: 'g'
+D34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD3D0>
+F34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD430>
+G34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD490>
+H34: 'g'
+I34: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD4F0>
+A35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD550>
+B35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD5B0>
+C35: 'g'
+D35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD610>
+F35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD670>
+G35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD6D0>
+H35: 'g'
+I35: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD730>
+A36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD790>
+B36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD7F0>
+C36: 'g'
+D36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD850>
+F36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD8B0>
+G36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD910>
+H36: 'g'
+I36: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD970>
+A37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBD9D0>
+B37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDA30>
+C37: 'mg'
+D37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDA90>
+F37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDAF0>
+G37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDB50>
+H37: 'mg'
+I37: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDBB0>
+A38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDC10>
+B38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDC70>
+C38: 'kCal'
+D38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDCD0>
+F38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDD30>
+G38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDD90>
+H38: 'kCal'
+I38: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDDF0>
+A39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDE50>
+B39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDEB0>
+C39: 'kCal'
+D39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDF10>
+F39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDF70>
+G39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBDFD0>
+H39: 'kCal'
+I39: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE030>
+A40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE090>
+B40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE0F0>
+C40: 'g'
+D40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE150>
+F40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE1B0>
+G40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE210>
+H40: 'g'
+I40: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE270>
+A41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE2D0>
+B41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE330>
+C41: 'g'
+D41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE390>
+F41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE3F0>
+G41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE450>
+H41: 'g'
+I41: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE4B0>
+A42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE510>
+B42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE570>
+C42: 'mg'
+D42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE5D0>
+F42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE630>
+G42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE690>
+H42: 'mg'
+I42: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE6F0>
+A44: 'Calories (rules)'
+F44: 'Calories'
+A45: 'B'
+B45: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE750>
+C45: 'kCal'
+F45: 'B'
+G45: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE7B0>
+H45: 'kCal'
+A46: 'C'
+B46: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE810>
+C46: 'kCal'
+F46: 'C'
+G46: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE870>
+H46: 'kCal'
+A47: 'C+'
+B47: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE8D0>
+C47: 'kCal'
+D47: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE930>
+F47: 'C+'
+G47: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE990>
+H47: 'kCal'
+I47: <openpyxl.worksheet.formula.ArrayFormula object at 0x000001AEDBFBE9F0>

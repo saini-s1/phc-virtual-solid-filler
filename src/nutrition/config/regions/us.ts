@@ -127,6 +127,26 @@ export const US_REGION: RegionConfig = {
       strategy: "significantFigures",
       sigFigs: 2,
     },
+    // Per-nutrient micronutrient amount increments, transcribed from the template's
+    // "Nutrition" tab (each cell states "round to nearest N …"). 101.9(c)(8)(iii).
+    {
+      // Iron → nearest 0.1 mg; Vitamin D → nearest 0.1 mcg.
+      group: "microNearestTenth",
+      citation: "101.9(c)(8)(iii)",
+      tiers: [{ upTo: null, inclusive: false, mode: "nearest", increment: 0.1 }],
+    },
+    {
+      // Vitamin C → nearest 1 mg.
+      group: "microNearestOne",
+      citation: "101.9(c)(8)(iii)",
+      tiers: [{ upTo: null, inclusive: false, mode: "nearest", increment: 1 }],
+    },
+    {
+      // Potassium, Calcium → nearest 10 mg; Vitamin A → nearest 10 mcg RAE.
+      group: "microNearestTen",
+      citation: "101.9(c)(8)(iii)",
+      tiers: [{ upTo: null, inclusive: false, mode: "nearest", increment: 10 }],
+    },
   ],
 
   pctDvRoundingGroup: "pctDv",

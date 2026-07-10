@@ -1,28 +1,23 @@
 import type { MacroGrams } from "./macros";
 
-// Method C — new default. Carbohydrate calories exclude non-digestible fiber, and
-// soluble fiber contributes 2 kcal/g. 21 CFR 101.9(c)(1)(i)(C).
-//   digestibleCarb = totalCarbohydrate − dietaryFiber − sugarAlcohol
-//   kcal = 4·protein + 9·totalFat + 4·digestibleCarb + 2·solubleFiber  (+ sugar-alcohol term)
+// Methods C and C+ — 21 CFR 101.9(c)(1)(i)(C). Both exclude non-digestible carbohydrate
+// from the 4 kcal/g carb term and add fiber back at 2 kcal/g. They differ ONLY by the fiber
+// data available (they share the same regulatory citation):
 //
-// Net effect vs Method B: insoluble fiber 0 kcal/g, soluble fiber 2 kcal/g.
-// Verified against spec target: reference product → 25.8894695168 → 25 cal.
+//   C  (no soluble/insoluble split): credit TOTAL dietary fiber at 2 kcal/g
+//        kcal = 4·protein + 9·totalFat + 4·(totalCarb − totalFiber) + 2·totalFiber
+//        → Excel "Nutrition STONF" cell C6.
+//
+//   C+ (soluble/insoluble split known): credit SOLUBLE fiber at 2 kcal/g
+//        kcal = 4·protein + 9·totalFat + 4·(totalCarb − totalFiber) + 2·solubleFiber
+//        → Excel "Nutrition STONF" cell C7 (the value the workbook declares).
+//
+// The formulas mirror the workbook exactly — no sugar-alcohol term (the workbook has none).
 
-export interface MethodCResult {
-  kcal: number;
-  flags: string[];
+export function caloriesMethodC(m: MacroGrams): number {
+  return 4 * m.protein + 9 * m.totalFat + 4 * (m.totalCarbohydrate - m.dietaryFiber) + 2 * m.dietaryFiber;
 }
 
-export function caloriesMethodC(m: MacroGrams): MethodCResult {
-  const flags: string[] = [];
-  const digestibleCarb = m.totalCarbohydrate - m.dietaryFiber - m.sugarAlcohol;
-  let kcal = 4 * m.protein + 9 * m.totalFat + 4 * digestibleCarb + 2 * m.solubleFiber;
-
-  if (m.sugarAlcohol > 0) {
-    // Sugar alcohols are not a single value under 101.9(c)(1)(i)(C); 2.4 kcal/g is a
-    // placeholder pending the specific polyol. Flagged, never silent.
-    kcal += 2.4 * m.sugarAlcohol;
-    flags.push("Sugar alcohol present: applied placeholder 2.4 kcal/g; confirm polyol-specific factor.");
-  }
-  return { kcal, flags };
+export function caloriesMethodCPlus(m: MacroGrams): number {
+  return 4 * m.protein + 9 * m.totalFat + 4 * (m.totalCarbohydrate - m.dietaryFiber) + 2 * m.solubleFiber;
 }

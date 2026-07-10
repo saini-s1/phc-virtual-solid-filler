@@ -13,7 +13,7 @@ import type { NutrientId } from "../types/nutrients";
 // (see recipe.parity.test.ts). Serving / dose weight = 10.68 g.
 //
 // Excel column → engine NutrientId mapping. The "kCal (US Rules)" column IS stored per
-// ingredient (caloriesPer100g) so Method D reproduces the workbook calorie total exactly:
+// ingredient (caloriesPer100g) for reference/display; calories are declared via B / C / C+:
 //   Sugar → totalSugars.  Blank cells (—) are omitted (they contribute 0 to the SUM).
 // Fat / saturated fat / trans fat / cholesterol are absent from the Excel. Per 21 CFR
 // 101.36(b)(2)(i) they are not declared on a Supplement Facts panel when absent; they are
@@ -37,6 +37,9 @@ const ingredients: Ingredient[] = [
   {
     id: "psyllium",
     name: "Psyllium Husk Powder",
+    tradeName: "Plantaga Ovata",
+    cas: "8063-16-9",
+    gcas: "10047885",
     caloriesPer100g: 360.7, // Excel Ingredients!E3 "kCal (US Rules)"
     nutrients: known({
       totalCarbohydrate: 86.8,
@@ -56,6 +59,9 @@ const ingredients: Ingredient[] = [
   {
     id: "maltodextrin",
     name: "Maltodextrin",
+    tradeName: "Tate& Lyle Star-Dri 100N-S",
+    cas: "9050-36-6",
+    gcas: "10046056 or 10046057",
     caloriesPer100g: 378, // Excel Ingredients!E4
     nutrients: known({
       totalCarbohydrate: 94.2,
@@ -73,6 +79,8 @@ const ingredients: Ingredient[] = [
   {
     id: "citric_acid",
     name: "Citric Acid Anhydrous",
+    cas: "77-92-9",
+    gcas: "10045074",
     caloriesPer100g: 247, // Excel Ingredients!E5
     nutrients: known({
       totalCarbohydrate: 99.45,
@@ -91,6 +99,9 @@ const ingredients: Ingredient[] = [
   {
     id: "stevia",
     name: "Stevia Extract",
+    tradeName: "ADM Stevia RA97",
+    cas: "58543-16-1",
+    gcas: "91400073",
     caloriesPer100g: 0, // Excel Ingredients!E6
     nutrients: known({
       totalCarbohydrate: 0,
@@ -107,6 +118,9 @@ const ingredients: Ingredient[] = [
   {
     id: "flavor",
     name: "Natural Orange Flavor",
+    tradeName: "E20121886 SENSE CAPTURE ORANGE NATURAL ORANGE FLAVOR WONF",
+    cas: "Mixture",
+    gcas: "91819530",
     caloriesPer100g: 494.76, // Excel Ingredients!E7
     nutrients: known({
       totalCarbohydrate: 75.31,
@@ -127,6 +141,9 @@ const ingredients: Ingredient[] = [
   {
     id: "paprika",
     name: "Paprika Extract (Color)",
+    tradeName: "MicroCap P-21-WSS-P-125-500",
+    cas: "68917-78-2",
+    gcas: "91564541",
     caloriesPer100g: 320.68, // Excel Ingredients!E8
     nutrients: known({
       totalCarbohydrate: 79.97,
@@ -147,6 +164,9 @@ const ingredients: Ingredient[] = [
   {
     id: "tumeric",
     name: "Turmeric (Color)",
+    tradeName: "i-Colors Yellow 901 WSS-P",
+    cas: "84775-52-0",
+    gcas: "91564539",
     caloriesPer100g: 380, // Excel Ingredients!E9
     nutrients: known({
       totalCarbohydrate: 96,
@@ -216,7 +236,7 @@ export const exampleProduct: CalcRequest = {
   servingWeightG: 10.68,
   // Servings/container intentionally unset (placeholder): the label shows "X" until entered.
   regionId: "US",
-  calorieMethod: "D", // Excel-faithful default: US-Rules supplier factors → 40 cal
+  calorieMethod: "C+", // Workbook-declared value: Method C+ (soluble fiber @ 2 kcal/g) → 25 cal
   recipe,
   ingredients,
   nutrientPolicies,
@@ -251,7 +271,7 @@ export const blankProduct: CalcRequest = {
   servingWeightG: 10,
   // Servings/container intentionally unset (placeholder): the label shows "X" until entered.
   regionId: "US",
-  calorieMethod: "D",
+  calorieMethod: "C+",
   recipe: [{ ingredientId: "custom-1", percentWW: 1 }],
   ingredients: [makeBlankIngredient("custom-1", "New ingredient")],
   nutrientPolicies,

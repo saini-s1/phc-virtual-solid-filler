@@ -19,24 +19,29 @@ import { dailyValueFor, percentDV } from "./percentDV";
 import { classify, assessCompliance } from "../compliance/compliance";
 import { roundByGroup } from "../rounding/rounding";
 
+// Orchestrator — the single function that the public index.ts calls. It sequences every
+// engine step in order: preflight → recipe sum → calories → per-nutrient pipeline
+// (stages, %DV, compliance, rounding) → audit trail. Returns a CalcResponse.
+// Nothing outside this file needs to know the order or the intermediate types.
+
 // What 21 CFR 101.36 explicitly cross-references from 101.9 (per live eCFR 7/01/2026):
 //   • Rounding increments for all declared amounts: 101.36(b)(2)(ii)(A) → 101.9(c)(1)–(7)
 //   • Zero-declaration threshold:                   101.36(b)(2)(i)    → 101.9(c)
 //   • RDI / DRV values:                             101.36(b)(2)(iii)(B)→ 101.9(c)(8)(iv),(c)(9)
 //   • Class I / II compliance floors:               101.36(f)(1)       → 101.9(g)(3),(g)(4)
-// Calorie CALCULATION methods (A–F in 101.9(c)(1)(i)) are NOT explicitly named in 101.36.
+// Calorie CALCULATION methods (101.9(c)(1)(i)) are NOT explicitly named in 101.36.
 // 101.36 governs rounding of the result; it does not define its own calculation formula.
-// The engine uses Methods D/B/C from 101.9(c)(1)(i) as the only FDA-recognised calorie
-// approaches for these ingredients — applied to supplements by regulatory implication and
-// consistent with FDA guidance, since 101.36 provides no alternative calculation method.
+// The engine implements exactly the three methods the source workbook uses — B, C and C+
+// from 101.9(c)(1)(i) — applied to supplements by regulatory implication, since 101.36
+// provides no alternative calculation method.
 export const PROTOTYPE_DISCLAIMER =
   "PROTOTYPE: surrogate calculation for evaluation only. " +
   "Panel framing: 21 CFR 101.36 (Supplement Facts). " +
   "Rounding increments, Daily Values, and Class I/II compliance: 101.9(c)(1)-(7), (c)(8)(iv), (c)(9), (g)(3)-(4) " +
   "as incorporated by reference in 101.36(b)(2)(ii)(A), (b)(2)(iii)(B), and (f)(1). " +
-  "Calorie calculation methods D/B/C: 101.9(c)(1)(i)(D/B/C) applied to supplements by regulatory implication " +
+  "Calorie calculation methods B/C/C+: 101.9(c)(1)(i)(B/C) applied to supplements by regulatory implication " +
   "(101.36 does not define its own calculation method; no FDA alternative exists). " +
-  "NOT a validated regulatory label. Confirm against the controlled labeling system before any external use.";
+  "Confirm against the controlled labeling system before any external use.";
 
 // Supplement-panel disclosure note (replaces the old "Excel omitted mandatory nutrients"
 // divergence). Under 21 CFR 101.36(b)(2)(i) a (b)(2)-dietary ingredient is declared only when
@@ -106,23 +111,12 @@ export function runPipeline(req: CalcRequest, region: RegionConfig): CalcRespons
   }
 
   // ── Recipe sum (Excel-parity) ──
-  const { totals, usRulesCalories, usRulesComplete, flags: recipeFlags } = sumRecipe(req);
+  const { totals, flags: recipeFlags } = sumRecipe(req);
   validationFlags.push(...recipeFlags);
   audit.add("transform", "recipe.sum", `Summed ${totals.size} nutrients across recipe lines.`);
 
-  // ── Calories ──
-  if (req.calorieMethod === "D" && !usRulesComplete) {
-    validationFlags.push(
-      "Method D (US Rules): one or more ingredients lack a per-100 g calorie factor, treated as 0.",
-    );
-  }
-  const { result: calories, flags: calorieFlags } = computeCalories(
-    req.calorieMethod,
-    totals,
-    region,
-    usRulesCalories,
-  );
-  validationFlags.push(...calorieFlags);
+  // ── Calories (workbook methods B / C / C+; C+ is the declared value) ──
+  const calories = computeCalories(req.calorieMethod, totals, region);
   const altText = calories.alternate
     ? `; alternate Method ${calories.alternate.method} = ${calories.alternate.value} cal (unrounded ${calories.alternate.unrounded})`
     : "";

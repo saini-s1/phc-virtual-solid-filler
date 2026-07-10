@@ -16,6 +16,8 @@ import CalorieMethodToggle from "./CalorieMethodToggle";
 
 type Props = {
   response: CalcResponse;
+  /** Optional second dose column (identical formulation at a different serving weight). */
+  response2?: CalcResponse | null;
   onMethodChange: (m: CalorieMethod) => void;
   /** Bumped on "Recalculate" to retrigger entrance motion. */
   runId: number;
@@ -104,7 +106,7 @@ function FactsBody({
             transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
             className="font-mono text-[40px] font-extrabold leading-none tabular-nums"
           >
-            {cal.methodImplemented ? cal.value : "n/a"}
+            {cal.value}
           </motion.span>
         </AnimatePresence>
       </div>
@@ -139,7 +141,7 @@ function FactsBody({
                 >
                   {c.method}{" "}
                   <strong className={active ? "text-pg-blue-700" : "text-ink-600"}>
-                    {c.implemented ? c.value : "n/a"}
+                    {c.value}
                   </strong>
                 </span>
               </span>
@@ -166,6 +168,113 @@ function FactsBody({
       <p className="pt-1 text-[10px] leading-snug text-ink-500">
         {panel.footnotes.join(" ")}
       </p>
+    </div>
+  );
+}
+
+// Two-dose amount cell: declared amount over its % Daily Value.
+function DoseCell({ n }: { n: NutrientResult }) {
+  const pct = n.pctDVRounded !== null ? `${n.pctDVRounded}%` : "";
+  return (
+    <>
+      <div className="text-right tabular-nums text-ink-800">
+        {formatAmount(n.declaredAmountRounded, n.unit)}
+      </div>
+      <div className="text-right font-bold tabular-nums text-ink-900">{pct}</div>
+    </>
+  );
+}
+
+const DUAL_GRID = "grid grid-cols-[minmax(0,1.5fr)_repeat(4,minmax(0,1fr))] items-baseline gap-x-1.5";
+
+function DualNutrientRow({ n1, n2 }: { n1: NutrientResult; n2: NutrientResult }) {
+  const meta = NUTRIENTS[n1.nutrientId];
+  const bold = meta.kind === "macro" && meta.indentLevel === 0;
+  const indent = INDENT[meta.indentLevel];
+  const label =
+    n1.nutrientId === "addedSugars" ? "Includes Added Sugars" : meta.displayName;
+  return (
+    <div className={`${DUAL_GRID} border-b border-ink-200 py-1 text-[12px] ${indent}`}>
+      <div className={`leading-snug ${bold ? "font-bold text-ink-900" : "text-ink-800"}`}>
+        {label}
+      </div>
+      <DoseCell n={n1} />
+      <DoseCell n={n2} />
+    </div>
+  );
+}
+
+// Dual-column Supplement Facts panel: one heading, two dose columns (e.g. per 1 vs per 2).
+// Both panels come from independent engine runs on the same recipe, so amounts and %DV
+// stay internally consistent per column.
+function DualFactsBody({
+  panel,
+  panel2,
+}: {
+  panel: NutritionPanel;
+  panel2: NutritionPanel;
+}) {
+  const macros = panel.nutrients.filter((n) => NUTRIENTS[n.nutrientId].kind === "macro");
+  const micros = panel.nutrients.filter((n) => NUTRIENTS[n.nutrientId].kind === "vitaminMineral");
+  const by2 = new Map(panel2.nutrients.map((n) => [n.nutrientId, n]));
+  const doseLabel = (g: number) => `Per ${Number(g.toFixed(2))} g`;
+
+  return (
+    <div className="font-sans text-ink-900">
+      <h3 className="text-[30px] font-extrabold leading-none tracking-[-0.02em]">{panel.title}</h3>
+      <div className="mt-1 h-px bg-ink-900" />
+
+      <p className="pt-1 text-[13px]">{panel.servingsPerContainer ?? "X"} servings per container</p>
+      <p className="pb-1 text-[13px] text-ink-600">
+        Two serving sizes shown: {doseLabel(panel.servingWeightG)} and{" "}
+        {doseLabel(panel2.servingWeightG)}
+      </p>
+
+      <ThickBar />
+
+      {/* Column headers */}
+      <div className={`${DUAL_GRID} pb-1`}>
+        <div className="text-[11px] font-semibold">Amount per serving</div>
+        <div className="col-span-2 text-center text-[11px] font-bold">
+          {doseLabel(panel.servingWeightG)}
+        </div>
+        <div className="col-span-2 text-center text-[11px] font-bold">
+          {doseLabel(panel2.servingWeightG)}
+        </div>
+      </div>
+      <div className={`${DUAL_GRID} border-b border-ink-900 pb-0.5 text-[9px] font-semibold uppercase tracking-wide text-ink-500`}>
+        <div />
+        <div className="text-right">Amount</div>
+        <div className="text-right">% DV*</div>
+        <div className="text-right">Amount</div>
+        <div className="text-right">% DV*</div>
+      </div>
+
+      {/* Calories row */}
+      <div className={`${DUAL_GRID} border-b border-ink-200 py-1`}>
+        <div className="text-[15px] font-extrabold">Calories</div>
+        <div className="col-span-2 text-right font-mono text-[18px] font-extrabold tabular-nums">
+          {panel.calories.value}
+        </div>
+        <div className="col-span-2 text-right font-mono text-[18px] font-extrabold tabular-nums">
+          {panel2.calories.value}
+        </div>
+      </div>
+
+      {macros.map((n) => {
+        const n2 = by2.get(n.nutrientId);
+        return n2 ? <DualNutrientRow key={n.nutrientId} n1={n} n2={n2} /> : null;
+      })}
+
+      <ThickBar />
+
+      {micros.map((n) => {
+        const n2 = by2.get(n.nutrientId);
+        return n2 ? <DualNutrientRow key={n.nutrientId} n1={n} n2={n2} /> : null;
+      })}
+
+      <MediumBar />
+      <p className="pt-1 text-[10px] leading-snug text-ink-500">{panel.footnotes.join(" ")}</p>
     </div>
   );
 }
@@ -205,11 +314,11 @@ function BlockedBody({
             {issue.code === "METHOD_C_FIBER_SPLIT_MISSING" && (
               <button
                 type="button"
-                onClick={() => onMethodChange("B")}
+                onClick={() => onMethodChange("C")}
                 className="btn-ghost mt-3"
               >
                 <ArrowRightLeft className="h-3.5 w-3.5" />
-                Switch to Method B
+                Switch to Method C
               </button>
             )}
           </div>
@@ -219,9 +328,16 @@ function BlockedBody({
   );
 }
 
-export default function NutritionFactsLabel({ response, onMethodChange, runId }: Props) {
+export default function NutritionFactsLabel({
+  response,
+  response2,
+  onMethodChange,
+  runId,
+}: Props) {
   const blocked = response.status === "blocked" || response.panel === null;
   const panelTitle = response.panel?.title ?? "Supplement Facts";
+  // Show the dual-dose layout only when a second dose is active and both columns resolve.
+  const dual = !blocked && response.panel !== null && response2?.panel != null;
 
   return (
     <section
@@ -229,19 +345,21 @@ export default function NutritionFactsLabel({ response, onMethodChange, runId }:
       aria-label={`Prototype ${panelTitle} panel`}
     >
       <div className="mb-3 flex items-center justify-between">
-        <p className="eyebrow">{panelTitle} · prototype</p>
-        <span className="pill border border-amber-300 bg-amber-50 text-[10px] text-amber-700">
-          <AlertTriangle className="h-3 w-3" aria-hidden="true" />
-          Not a validated label
-        </span>
+        <p className="eyebrow">
+          {panelTitle} · prototype{dual ? " · two doses" : ""}
+        </p>
       </div>
 
       <div
-        key={runId}
-        className="mx-auto w-full max-w-[420px] animate-fade-up rounded-xl border-2 border-ink-900 bg-white px-4 py-3"
+        key={`${runId}-${dual ? "dual" : "single"}`}
+        className={`mx-auto w-full animate-fade-up rounded-xl border-2 border-ink-900 bg-white px-4 py-3 ${
+          dual ? "max-w-[560px]" : "max-w-[420px]"
+        }`}
       >
         {blocked || !response.panel ? (
           <BlockedBody response={response} onMethodChange={onMethodChange} />
+        ) : dual && response2?.panel ? (
+          <DualFactsBody panel={response.panel} panel2={response2.panel} />
         ) : (
           <FactsBody panel={response.panel} onMethodChange={onMethodChange} />
         )}

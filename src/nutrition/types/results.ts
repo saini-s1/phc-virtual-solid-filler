@@ -41,17 +41,15 @@ export interface CalorieComparison {
   value: number;
   unrounded: number;
   citation: string;
-  implemented: boolean;
 }
 
 export interface CalorieResult {
   method: CalorieMethod;
-  methodImplemented: boolean;
   value: number;
   unrounded: number;
   /** The alternate method's declaration (FLAG 1): C shows B alongside and vice-versa. */
   alternate: { method: CalorieMethod; value: number; unrounded: number } | null;
-  /** All implemented methods (D/B/C) for side-by-side display — pure data, no labels. */
+  /** All workbook methods (C+/C/B) for side-by-side display — pure data, no labels. */
   comparisons: CalorieComparison[];
   citation: string;
 }

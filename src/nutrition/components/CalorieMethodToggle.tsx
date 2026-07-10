@@ -1,11 +1,10 @@
 import { motion } from "framer-motion";
 import type { CalorieMethod } from "../index";
 
-// Segmented D | B | C calorie-method control. D (US-Rules supplier factors) is the
-// Excel-faithful default; B (legacy 4/4/9) and C (fiber-adjusted) are cited cross-checks.
-// Methods A/E/F are recognized by the engine but not implemented in v1, so only the three
-// usable methods are shown. Used both in the left input panel and beside the center
-// Calories line (they share state).
+// Segmented C+ | C | B calorie-method control — the three methods the source workbook
+// implements (21 CFR 101.9(c)(1)(i)). C+ (soluble fiber @ 2 kcal/g) is the workbook's declared
+// value; C (total fiber @ 2 kcal/g) is used when no soluble split exists; B is legacy 4/4/9.
+// Used both in the left input panel and beside the center Calories line (they share state).
 
 type Props = {
   method: CalorieMethod;
@@ -16,9 +15,9 @@ type Props = {
 };
 
 const ENABLED: { id: CalorieMethod; label: string; hint: string }[] = [
-  { id: "D", label: "D", hint: "US Rules · supplier factors (Excel)" },
+  { id: "C+", label: "C+", hint: "Soluble fiber @ 2 kcal/g (workbook declared)" },
+  { id: "C", label: "C", hint: "Total fiber @ 2 kcal/g (no split)" },
   { id: "B", label: "B", hint: "Legacy 4/4/9" },
-  { id: "C", label: "C", hint: "Fiber-adjusted" },
 ];
 
 export default function CalorieMethodToggle({ method, onChange, layoutGroup, size = "md" }: Props) {

@@ -11,7 +11,7 @@ describe("audit trail", () => {
 
   it("carries inputsHash, calorieMethod, and region", () => {
     expect(trail.inputsHash).toMatch(/^[0-9a-f]{8}$/);
-    expect(trail.calorieMethod).toBe("D");
+    expect(trail.calorieMethod).toBe("C+");
     expect(trail.region).toBe("US");
   });
 
