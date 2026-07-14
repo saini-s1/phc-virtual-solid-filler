@@ -2,18 +2,23 @@
 // nudge the gummy geometry by hand. it only reads/writes the scenario state and
 // hands it back up the tree; it never runs the model itself.
 // change which inputs are exposed, or how the form looks, right here.
-import { Sparkles, RotateCcw } from "lucide-react";
+import { Sparkles, RotateCcw, PencilRuler } from "lucide-react";
+import { GUMMY_PRESETS, type GummyPreset } from "../data/productPresets";
+import { gummyVolumeMm3 } from "../model/realSurrogate";
 import {
-  GUMMY_PRESETS,
-  frustumVolumeMl,
-  type GummyPreset,
-} from "../data/productPresets";
-import { BOTTLE_PRESETS } from "../data/bottlePresets";
+  BOTTLE_PRESETS,
+  CUSTOM_BOTTLE_ID,
+  CUSTOM_VOLUME_RANGE,
+  mlToOz,
+  type BottleShape,
+} from "../data/bottlePresets";
 
 export type ScenarioState = {
   gummyId: GummyPreset["id"];
   bottleId: string;
   count: number;
+  // Present only while the "Create custom bottle" option is selected.
+  customBottle?: { volumeMl: number; shape: BottleShape };
   // Optional gummy overrides — when present, displace preset values.
   custom?: Partial<{
     radiusTopMm: number;
@@ -56,12 +61,15 @@ export default function InputPanel({
     onChange({ ...state, custom: { ...(state.custom ?? {}), ...patch } });
 
   const g = resolveGummy(state, gummy);
-  const gummyVolumeMl = frustumVolumeMl(
-    g.radiusTopMm,
-    g.radiusBottomMm,
-    g.heightMm
-  );
+  // The model derives single-gummy volume from the DEM mold curve (family +
+  // height), NOT from the frustum radii — so show that number here to stay
+  // consistent with what actually drives the prediction.
+  const gummyVolumeMl = gummyVolumeMm3(gummy.family, g.heightMm) / 1000;
   const hasCustom = !!state.custom && Object.keys(state.custom).length > 0;
+
+  const isCustomBottle = state.bottleId === CUSTOM_BOTTLE_ID;
+  const customBottle =
+    state.customBottle ?? { volumeMl: 500, shape: "round" as BottleShape };
 
   return (
     <section
@@ -117,7 +125,20 @@ export default function InputPanel({
               id="bottle-preset"
               className="select-input pr-9"
               value={state.bottleId}
-              onChange={(e) => update({ bottleId: e.target.value })}
+              onChange={(e) => {
+                const bottleId = e.target.value;
+                if (bottleId === CUSTOM_BOTTLE_ID) {
+                  update({
+                    bottleId,
+                    customBottle: state.customBottle ?? {
+                      volumeMl: 500,
+                      shape: "round",
+                    },
+                  });
+                } else {
+                  update({ bottleId });
+                }
+              }}
             >
               {(["round", "rectangle"] as const).map((shape) => {
                 const items = BOTTLE_PRESETS.filter((b) => b.shape === shape);
@@ -135,11 +156,113 @@ export default function InputPanel({
                   </optgroup>
                 );
               })}
+              <optgroup label="Custom">
+                <option value={CUSTOM_BOTTLE_ID}>
+                  Create custom bottle…
+                </option>
+              </optgroup>
             </select>
             <Chevron />
           </div>
         </div>
       </div>
+
+      {/* Custom bottle builder — only while the custom option is selected */}
+      {isCustomBottle && (
+        <div className="surface-inset p-4">
+          <div className="mb-3 flex items-center gap-2">
+            <PencilRuler
+              className="h-4 w-4 text-pg-cyan-600"
+              aria-hidden="true"
+            />
+            <p className="eyebrow mb-0">Custom bottle</p>
+          </div>
+
+          {/* Shape toggle */}
+          <div
+            className="mb-4 grid grid-cols-2 gap-1 rounded-lg bg-ink-100 p-1"
+            role="group"
+            aria-label="Custom bottle shape"
+          >
+            {(["round", "rectangle"] as const).map((shape) => {
+              const active = customBottle.shape === shape;
+              return (
+                <button
+                  key={shape}
+                  type="button"
+                  aria-pressed={active}
+                  onClick={() =>
+                    update({
+                      customBottle: { ...customBottle, shape },
+                    })
+                  }
+                  className={
+                    "rounded-md px-3 py-1.5 text-xs font-semibold capitalize transition " +
+                    (active
+                      ? "bg-white text-pg-blue-700 shadow-sm"
+                      : "text-ink-500 hover:text-ink-700")
+                  }
+                >
+                  {shape}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Volume: free number entry + quick-pick slider */}
+          <div className="mb-1 flex items-end justify-between">
+            <label htmlFor="custom-volume" className="field-label mb-0">
+              Nominal volume
+            </label>
+            <div className="flex items-center gap-1.5">
+              <input
+                type="number"
+                min={1}
+                step={5}
+                value={customBottle.volumeMl}
+                onChange={(e) =>
+                  update({
+                    customBottle: {
+                      ...customBottle,
+                      volumeMl: Number(e.target.value),
+                    },
+                  })
+                }
+                className="number-input w-24 text-right"
+                aria-label="Custom bottle nominal volume in cc"
+              />
+              <span className="text-xs font-medium text-ink-400">
+                cc · {mlToOz(customBottle.volumeMl).toFixed(1)} oz
+              </span>
+            </div>
+          </div>
+          <input
+            id="custom-volume"
+            type="range"
+            min={CUSTOM_VOLUME_RANGE.minMl}
+            max={CUSTOM_VOLUME_RANGE.maxMl}
+            step={CUSTOM_VOLUME_RANGE.stepMl}
+            value={Math.min(
+              Math.max(customBottle.volumeMl, CUSTOM_VOLUME_RANGE.minMl),
+              CUSTOM_VOLUME_RANGE.maxMl
+            )}
+            onChange={(e) =>
+              update({
+                customBottle: {
+                  ...customBottle,
+                  volumeMl: Number(e.target.value),
+                },
+              })
+            }
+            className="w-full"
+            aria-label="Custom bottle volume quick-pick slider"
+          />
+          <div className="mt-1 flex justify-between text-[10px] font-medium tabular-nums text-ink-300">
+            <span>{CUSTOM_VOLUME_RANGE.minMl} cc (6 oz)</span>
+            <span>{CUSTOM_VOLUME_RANGE.maxMl} cc · type for more</span>
+          </div>
+        </div>
+      )}
 
       {/* Gummy geometry */}
       <div>
@@ -202,6 +325,11 @@ export default function InputPanel({
             )}
           </div>
         </div>
+        <p className="mt-2 text-[11px] leading-snug text-ink-400">
+          The surrogate is driven by <strong className="text-ink-500">height</strong>{" "}
+          and <strong className="text-ink-500">density</strong> (via the DEM mold
+          family). Radii are used for the 3D view and mass estimate only.
+        </p>
       </div>
 
       {/* Count */}

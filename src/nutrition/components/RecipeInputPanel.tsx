@@ -1,16 +1,12 @@
 import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Sparkles, FlaskConical, Plus, Sigma, Info, ChevronDown } from "lucide-react";
+import { Sparkles, FlaskConical, Plus, Info, Trash2 } from "lucide-react";
 import type {
   CalcRequest,
   CalorieMethod,
-  Completeness,
-  Ingredient,
   NutrientId,
-  NutritionPanel,
 } from "../index";
-import { NUTRIENTS } from "../config/nutrients";
-import { INGREDIENT_LIBRARY } from "../data/ingredientLibrary";
+import { INGREDIENT_LIBRARY, type LibraryIngredient } from "../data/ingredientLibrary";
 import type { PresetId } from "../NutritionApp";
 import IngredientRow from "./IngredientRow";
 import CalorieMethodToggle from "./CalorieMethodToggle";
@@ -39,20 +35,16 @@ const CALORIE_METHODS: { id: CalorieMethod; name: string; desc: string; when: st
 ];
 
 // LEFT panel — formulation inputs that feed the calc engine. No nutrient math here;
-// it only edits the CalcRequest and hands changes up to the orchestrator. The "Formulation
-// totals" strip echoes the engine's summed amounts (Excel Formulation row 8) — read-only.
+// it only edits the CalcRequest and hands changes up to the orchestrator.
 
 type Props = {
   request: CalcRequest;
-  /** Engine response (null while the formulation is blocked) — used for the read-only totals. */
-  panel: NutritionPanel | null;
   preset: PresetId;
   onLoadPreset: (id: PresetId) => void;
   onServingChange: (g: number) => void;
   onServingsPerContainerChange: (count: number | undefined) => void;
   onMethodChange: (m: CalorieMethod) => void;
   onPercentChange: (ingredientId: string, fraction: number) => void;
-  onCycleCompleteness: (ingredientId: string) => void;
   onAddIngredient: () => void;
   onAddFromLibrary: (libId: string) => void;
   onRemoveIngredient: (ingredientId: string) => void;
@@ -60,6 +52,12 @@ type Props = {
   onNutrientChange: (ingredientId: string, nutrientId: NutrientId, per100g: number) => void;
   onCaloriesChange: (ingredientId: string, kcal: number) => void;
   onRun: () => void;
+  /** Ingredients other sessions have saved to the shared library (server-backed, may be empty while loading). */
+  customLibrary: LibraryIngredient[];
+  /** Persists one recipe ingredient's current fields to the shared library. */
+  onSaveToLibrary: (ingredientId: string) => Promise<void>;
+  /** Permanently deletes a previously-saved ingredient from the shared library (never the 16 built-ins). */
+  onDeleteFromLibrary: (id: string) => Promise<void>;
   /** Optional second dose column controls. */
   secondDoseEnabled: boolean;
   secondDoseWeightG: number;
@@ -67,30 +65,14 @@ type Props = {
   onSecondDoseWeightChange: (g: number) => void;
 };
 
-/** Compact number formatting for the read-only totals strip. */
-function fmtTotal(n: number): string {
-  return n.toLocaleString("en-US", { maximumFractionDigits: 4 });
-}
-
-/** Aggregate one ingredient's per-nutrient completeness into a single row status. */
-function aggregateCompleteness(ing: Ingredient): Completeness {
-  if (ing.nutrients.some((n) => n.completeness === "unknown")) return "unknown";
-  if (ing.nutrients.length > 0 && ing.nutrients.every((n) => n.completeness === "zeroConfirmed")) {
-    return "zeroConfirmed";
-  }
-  return "known";
-}
-
 export default function RecipeInputPanel({
   request,
-  panel,
   preset,
   onLoadPreset,
   onServingChange,
   onServingsPerContainerChange,
   onMethodChange,
   onPercentChange,
-  onCycleCompleteness,
   onAddIngredient,
   onAddFromLibrary,
   onRemoveIngredient,
@@ -98,16 +80,36 @@ export default function RecipeInputPanel({
   onNutrientChange,
   onCaloriesChange,
   onRun,
+  customLibrary,
+  onSaveToLibrary,
+  onDeleteFromLibrary,
   secondDoseEnabled,
   secondDoseWeightG,
   onToggleSecondDose,
   onSecondDoseWeightChange,
 }: Props) {
   const [methodInfoOpen, setMethodInfoOpen] = useState(false);
-  const [totalsOpen, setTotalsOpen] = useState(false);
+  const [confirmDeleteId, setConfirmDeleteId] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const byId = new Map(request.ingredients.map((i) => [i.id, i]));
   const percentSum = request.recipe.reduce((acc, line) => acc + line.percentWW, 0);
   const sumBalanced = Math.abs(percentSum - 1) <= 0.01;
+  // Built-in template library + whatever the shared server library has accumulated.
+  const combinedLibrary = [...INGREDIENT_LIBRARY, ...customLibrary];
+
+  const handleConfirmDelete = async (id: string) => {
+    setDeletingId(id);
+    setDeleteError(null);
+    try {
+      await onDeleteFromLibrary(id);
+      setConfirmDeleteId(null);
+    } catch (err) {
+      setDeleteError(err instanceof Error ? err.message : "Failed to delete.");
+    } finally {
+      setDeletingId(null);
+    }
+  };
 
   return (
     <section
@@ -331,14 +333,13 @@ export default function RecipeInputPanel({
                 key={line.ingredientId}
                 ingredient={ing}
                 percentWW={line.percentWW}
-                completeness={aggregateCompleteness(ing)}
                 canRemove={request.recipe.length > 1}
                 onPercentChange={(frac) => onPercentChange(line.ingredientId, frac)}
-                onCycleCompleteness={() => onCycleCompleteness(line.ingredientId)}
                 onRename={(name) => onRenameIngredient(line.ingredientId, name)}
                 onNutrientChange={(nid, v) => onNutrientChange(line.ingredientId, nid, v)}
                 onCaloriesChange={(kcal) => onCaloriesChange(line.ingredientId, kcal)}
                 onRemove={() => onRemoveIngredient(line.ingredientId)}
+                onSaveToLibrary={() => onSaveToLibrary(line.ingredientId)}
               />
             );
           })}
@@ -362,8 +363,8 @@ export default function RecipeInputPanel({
               if (e.target.value) onAddFromLibrary(e.target.value);
             }}
           >
-            <option value="">Add from library ({INGREDIENT_LIBRARY.length} saved)…</option>
-            {INGREDIENT_LIBRARY.map((lib) => (
+            <option value="">Add from library ({combinedLibrary.length} saved)…</option>
+            {combinedLibrary.map((lib) => (
               <option key={lib.id} value={lib.id}>
                 {lib.name}
                 {lib.gcas ? ` · GCAS ${lib.gcas}` : ""}
@@ -371,65 +372,62 @@ export default function RecipeInputPanel({
             ))}
           </select>
         </div>
+
+        {/* Manage saved ingredients — only ones a user added (never the 16 built-ins), each
+            delete requires an explicit "Yes" confirm since it's permanent for everyone. */}
+        {customLibrary.length > 0 && (
+          <div className="mt-3">
+            <p className="field-label">Your saved ingredients · {customLibrary.length}</p>
+            <div className="flex flex-col gap-1">
+              {customLibrary.map((lib) => (
+                <div
+                  key={lib.id}
+                  className="flex items-center justify-between gap-2 rounded-md border border-ink-100 bg-white px-2 py-1.5"
+                >
+                  <span className="truncate text-[12px] text-ink-700" title={lib.name}>
+                    {lib.name}
+                  </span>
+                  {confirmDeleteId === lib.id ? (
+                    <span className="flex flex-shrink-0 items-center gap-1.5">
+                      <span className="text-[11px] font-medium text-rose-600">Delete permanently?</span>
+                      <button
+                        type="button"
+                        onClick={() => handleConfirmDelete(lib.id)}
+                        disabled={deletingId === lib.id}
+                        className="rounded px-1.5 py-0.5 text-[11px] font-semibold text-rose-600 hover:bg-rose-50 disabled:opacity-50"
+                      >
+                        {deletingId === lib.id ? "Deleting\u2026" : "Yes, delete"}
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setConfirmDeleteId(null)}
+                        className="rounded px-1.5 py-0.5 text-[11px] text-ink-500 hover:bg-ink-50"
+                      >
+                        Cancel
+                      </button>
+                    </span>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={() => setConfirmDeleteId(lib.id)}
+                      aria-label={`Delete ${lib.name} from the shared library`}
+                      title="Delete from the shared library"
+                      className="flex h-6 w-6 flex-shrink-0 items-center justify-center rounded text-ink-400 hover:bg-rose-50 hover:text-rose-600"
+                    >
+                      <Trash2 className="h-3.5 w-3.5" />
+                    </button>
+                  )}
+                </div>
+              ))}
+            </div>
+            {deleteError && <p className="mt-1 text-[11px] text-rose-600">{deleteError}</p>}
+          </div>
+        )}
         {!sumBalanced && (
           <p className="mt-2 text-[12px] leading-relaxed text-amber-700">
             %w/w does not sum to 100%. The engine flags this; it never silently normalizes.
           </p>
         )}
-      </div>
-
-      {/* Formulation totals — collapsible; the engine's summed amounts (Excel row 8), read-only */}
-      <div>
-        <button
-          type="button"
-          onClick={() => setTotalsOpen((o) => !o)}
-          aria-expanded={totalsOpen}
-          className="flex w-full items-center justify-between rounded-lg border border-ink-100 bg-white px-3 py-2 text-left hover:bg-ink-50"
-        >
-          <span className="flex items-center gap-1.5">
-            <Sigma className="h-3.5 w-3.5 text-pg-cyan-600" aria-hidden="true" />
-            <span className="field-label mb-0">Formulation totals · per serving</span>
-          </span>
-          <motion.span animate={{ rotate: totalsOpen ? 180 : 0 }} transition={{ duration: 0.2 }}>
-            <ChevronDown className="h-4 w-4 text-ink-400" />
-          </motion.span>
-        </button>
-        <AnimatePresence initial={false}>
-          {totalsOpen && (
-            <motion.div
-              initial={{ height: 0, opacity: 0 }}
-              animate={{ height: "auto", opacity: 1 }}
-              exit={{ height: 0, opacity: 0 }}
-              transition={{ duration: 0.24, ease: [0.22, 1, 0.36, 1] }}
-              className="overflow-hidden"
-            >
-              {panel ? (
-                <div className="mt-2 max-h-[260px] divide-y divide-ink-100 overflow-y-auto rounded-lg border border-ink-100 bg-white">
-                  <div className="flex items-center justify-between px-3 py-1.5">
-                    <span className="text-[13px] font-semibold text-ink-800">Calories</span>
-                    <span className="font-mono text-[13px] tabular-nums text-ink-800">
-                      {fmtTotal(panel.calories.unrounded)} <span className="text-ink-400">kcal</span>
-                    </span>
-                  </div>
-                  {panel.nutrients.map((n) => (
-                    <div key={n.nutrientId} className="flex items-center justify-between px-3 py-1.5">
-                      <span className="text-[13px] text-ink-600">
-                        {NUTRIENTS[n.nutrientId].displayName}
-                      </span>
-                      <span className="font-mono text-[13px] tabular-nums text-ink-700">
-                        {fmtTotal(n.stages.raw)} <span className="text-ink-400">{n.unit}</span>
-                      </span>
-                    </div>
-                  ))}
-                </div>
-              ) : (
-                <p className="mt-2 rounded-lg border border-ink-100 bg-white px-3 py-2.5 text-[13px] text-ink-500">
-                  Totals appear once the formulation resolves. Clear the blocking issue above.
-                </p>
-              )}
-            </motion.div>
-          )}
-        </AnimatePresence>
       </div>
 
       <button type="button" className="btn-primary" onClick={onRun}>

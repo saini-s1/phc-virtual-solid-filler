@@ -17,12 +17,20 @@
 // phc dimensions before anyone leans on an output.
 // ---------------------------------------------------------------------------
 
+// The two real DEM reference mold shapes the surrogate was trained on.
+// Every UI gummy maps onto one of these families (see model/realSurrogate.ts).
+export type GummyFamily = "EC" | "DoryNew";
+
 export type GummyPreset = {
   id: "current" | "dory" | "emerald";
   name: string;
   shortName: string;
   description: string;
-  // Frustum geometry, all in millimeters
+  // Which trained DEM mold family this gummy is evaluated against.
+  family: GummyFamily;
+  // Frustum geometry, all in millimeters (used for the 3D visualization; the
+  // real model derives gummy volume from `family` + `heightMm` via the mold
+  // curve, not from these radii).
   radiusTopMm: number;
   radiusBottomMm: number;
   heightMm: number;
@@ -54,27 +62,30 @@ export function frustumVolumeMl(
 export const GUMMY_PRESETS: GummyPreset[] = [
   {
     id: "dory",
-    name: "Dory",
+    name: "Dory (DoryNew mold)",
     shortName: "Dory",
-    description: "Reference Dory gummy geometry from DEM characterization.",
-    radiusTopMm: 6.4,
-    radiusBottomMm: 9.65,
-    heightMm: 11.5,
-    densityGPerMl: 1.4,
-    weightG: 3.87,
+    description:
+      "Dory reference gummy — the DoryNew DEM mold. Nominal H 13 mm, base ⌀ 19.44 mm, Vg 2710 mm³ (verified against refs/DoryNew.stl).",
+    family: "DoryNew",
+    radiusTopMm: 6.6,
+    radiusBottomMm: 9.72,
+    heightMm: 13.0,
+    densityGPerMl: 1.425,
+    weightG: 3.862,
     accentColor: "#2649ea", // pg-blue-600
   },
   {
     id: "emerald",
-    name: "Emerald City",
+    name: "Emerald City (EC mold)",
     shortName: "Emerald",
     description:
-      "Proposed Emerald City gummy — taller body and slightly wider base than Dory.",
-    radiusTopMm: 6.6,
-    radiusBottomMm: 9.83,
-    heightMm: 12.8,
-    densityGPerMl: 1.42,
-    weightG: 4.3,
+      "Emerald City reference gummy — the EC DEM mold. Nominal H 9.5 mm, base ⌀ 18.07 mm, Vg 1753 mm³ (verified against refs/EC25mm.stl).",
+    family: "EC",
+    radiusTopMm: 6.4,
+    radiusBottomMm: 9.03,
+    heightMm: 9.5,
+    densityGPerMl: 1.425,
+    weightG: 2.498,
     accentColor: "#06b6d4", // pg-cyan-500
   },
 ];

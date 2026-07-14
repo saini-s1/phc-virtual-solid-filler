@@ -15,3 +15,14 @@ tsconfig.tsbuildinfo
 
 # python scratch env used by the nutrition spec verifiers
 .venv/
+__pycache__/
+*.pyc
+
+# secrets — never commit; see .env.example for the template
+.env
+.env.*
+!.env.example
+
+# local fallback store for the custom ingredient library (server/store.js);
+# in Azure this data lives in Table Storage instead, not on disk
+server/data/

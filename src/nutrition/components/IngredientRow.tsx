@@ -1,28 +1,27 @@
 import { useState } from "react";
-import { ChevronDown, Trash2 } from "lucide-react";
+import { ChevronDown, Trash2, Save, Check, AlertCircle } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
-import type { Completeness, Ingredient, NutrientId } from "../index";
+import type { Ingredient, NutrientId } from "../index";
 import { NUTRIENTS } from "../config/nutrients";
 import { TRACKED_NUTRIENT_IDS } from "../data/exampleProduct";
-import CompletenessBadge from "./CompletenessBadge";
 
-// One editable recipe line. Collapsed: name · %w/w · completeness badge. Expanded: rename,
+// One editable recipe line. Collapsed: name · %w/w · remove. Expanded: rename,
 // per-100 g supplier calories (US Rules column, reference only), and the per-100 g nutrient grid the engine
-// declares — plus remove. All edits flow up to the CalcRequest; this row owns only the
+// declares. All edits flow up to the CalcRequest; this row owns only the
 // open/closed UI state.
 
 type Props = {
   ingredient: Ingredient;
   /** Stored as a fraction 0..1; displayed as a percent. */
   percentWW: number;
-  completeness: Completeness;
   canRemove: boolean;
   onPercentChange: (fraction: number) => void;
-  onCycleCompleteness: () => void;
   onRename: (name: string) => void;
   onNutrientChange: (nutrientId: NutrientId, per100g: number) => void;
   onCaloriesChange: (kcal: number) => void;
   onRemove: () => void;
+  /** Persists this ingredient's current fields to the shared ingredient library (server-backed). */
+  onSaveToLibrary: () => Promise<void>;
 };
 
 /** Select-all on focus so typing replaces the controlled value instead of fighting the 0. */
@@ -31,16 +30,17 @@ const selectOnFocus = (e: React.FocusEvent<HTMLInputElement>) => e.currentTarget
 export default function IngredientRow({
   ingredient,
   percentWW,
-  completeness,
   canRemove,
   onPercentChange,
-  onCycleCompleteness,
   onRename,
   onNutrientChange,
   onCaloriesChange,
   onRemove,
+  onSaveToLibrary,
 }: Props) {
   const [open, setOpen] = useState(false);
+  const [saveState, setSaveState] = useState<"idle" | "saving" | "saved" | "error">("idle");
+  const [saveError, setSaveError] = useState<string | null>(null);
 
   // Display the percent rounded for readability; the exact stored fraction is preserved
   // unless the user actually edits (keeps Excel parity for untouched lines).
@@ -51,9 +51,23 @@ export default function IngredientRow({
     if (Number.isFinite(next)) onPercentChange(next / 100);
   };
 
+  const handleSave = async () => {
+    setSaveState("saving");
+    setSaveError(null);
+    try {
+      await onSaveToLibrary();
+      setSaveState("saved");
+      setTimeout(() => setSaveState((s) => (s === "saved" ? "idle" : s)), 2500);
+    } catch (err) {
+      setSaveState("error");
+      setSaveError(err instanceof Error ? err.message : "Failed to save.");
+    }
+  };
+
   // Current per-100 g value for a nutrient (0 if the ingredient doesn't list it).
   const valueOf = (id: NutrientId): number =>
     ingredient.nutrients.find((n) => n.nutrientId === id)?.per100g ?? 0;
+
 
   return (
     <div className="rounded-lg border border-ink-100 bg-white">
@@ -103,7 +117,16 @@ export default function IngredientRow({
           />
           <span className="font-mono text-[10px] text-ink-400">%</span>
         </div>
-        <CompletenessBadge completeness={completeness} onCycle={onCycleCompleteness} />
+        <button
+          type="button"
+          onClick={onRemove}
+          disabled={!canRemove}
+          aria-label={`Remove ${ingredient.name}`}
+          title={canRemove ? "Remove this ingredient" : "A formula needs at least one ingredient"}
+          className="flex h-7 w-7 items-center justify-center rounded-md text-ink-400 hover:bg-rose-50 hover:text-rose-600 disabled:cursor-not-allowed disabled:opacity-30"
+        >
+          <Trash2 className="h-4 w-4" />
+        </button>
       </div>
 
       {/* Expanded editor */}
@@ -128,6 +151,30 @@ export default function IngredientRow({
                 onChange={(e) => onRename(e.target.value)}
                 className="number-input w-full py-1.5 text-left text-[13px]"
               />
+
+              {/* Save this ingredient (name + calories + per-100 g nutrients below) to the
+                  shared ingredient library, so it shows up in "Add from library" next time. */}
+              <div className="mt-2 flex items-center gap-2">
+                <button
+                  type="button"
+                  onClick={handleSave}
+                  disabled={saveState === "saving" || !ingredient.name.trim()}
+                  className="btn-ghost flex-shrink-0 justify-center py-1.5 text-[12px]"
+                >
+                  {saveState === "saved" ? (
+                    <Check className="h-3.5 w-3.5 text-emerald-600" />
+                  ) : (
+                    <Save className="h-3.5 w-3.5" />
+                  )}
+                  {saveState === "saving" ? "Saving…" : saveState === "saved" ? "Saved" : "Save to library"}
+                </button>
+                {saveState === "error" && (
+                  <span className="inline-flex items-center gap-1 text-[11px] text-rose-600">
+                    <AlertCircle className="h-3.5 w-3.5" />
+                    {saveError}
+                  </span>
+                )}
+              </div>
 
               {/* Supplier identity (read-only, from the Ingredients library / Excel tab) */}
               {(ingredient.tradeName || ingredient.cas || ingredient.gcas) && (
@@ -206,18 +253,6 @@ export default function IngredientRow({
                   );
                 })}
               </div>
-
-              {/* Remove */}
-              <button
-                type="button"
-                onClick={onRemove}
-                disabled={!canRemove}
-                className="btn-ghost mt-3 w-full justify-center text-rose-600 disabled:cursor-not-allowed disabled:opacity-40"
-                title={canRemove ? "Remove this ingredient" : "A formula needs at least one ingredient"}
-              >
-                <Trash2 className="h-4 w-4" />
-                Remove ingredient
-              </button>
             </div>
           </motion.div>
         )}

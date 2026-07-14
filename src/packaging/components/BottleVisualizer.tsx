@@ -46,7 +46,7 @@ export default function BottleVisualizer({ bottle, result, count, runId }: Props
     0,
     1
   );
-  const band = targetBandMm(bottle.shoulderHeightMm);
+  const band = targetBandMm(result);
   const targetFraction = clamp(
     Math.max(0, band.idealMm) / result.totalInternalHeightMm,
     0,

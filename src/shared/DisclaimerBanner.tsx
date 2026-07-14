@@ -14,9 +14,9 @@ export default function DisclaimerBanner() {
           aria-hidden="true"
         />
         <p className="text-xs leading-relaxed text-amber-900 md:text-sm">
-          <span className="font-semibold">Prototype only.</span> Predictions
-          shown are surrogate-model mock outputs for workflow demonstration.
-          Replace with trained DEM coefficients before any technical use.
+          <span className="font-semibold">Prototype interface.</span> Predictions
+          come from a DEM-validated surrogate model; confirm against a full DEM
+          run before production use.
         </p>
       </div>
     </div>

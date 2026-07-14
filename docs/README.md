@@ -1,6 +1,6 @@
 # PHC Virtual Solid Filler
 
-> **Prototype only.** This is an internal P&G-style UI mockup that demonstrates how DEM simulation outputs could be converted into a fast surrogate model for predicting bottle fill height and slack-fill / headspace for PHC solid product forms (starting with gummies). **All predictions are placeholder math** — replace with trained DEM coefficients before any technical use.
+> **Prototype only.** This is an internal P&G-style UI mockup for predicting bottle fill height and slack-fill / headspace for PHC solid product forms (starting with gummies). The packing-fraction math is a **real Gaussian Process surrogate trained on and validated against Aspherix DEM simulations** (see [Where real DEM coefficients connect](#where-real-dem-coefficients-connect) below) — but it is still a prototype **interface**: predictions are only trusted inside the validated design space, and any production decision should be confirmed against a full DEM run.
 
 ## Purpose
 
@@ -19,6 +19,9 @@ The mockup makes the vision tangible in under 10 seconds: inputs on the left, an
 - **Framer Motion** for the bottle fill animation
 - **Recharts** for the comparison chart
 - **Lucide React** for icons
+- **Express** (`server/`) — small backend serving the built SPA plus a REST API
+  for the Nutrition Calculator's shared ingredient library, backed by Azure
+  Table Storage in production (see [DEPLOYMENT.md](DEPLOYMENT.md))
 
 ## How to run
 
@@ -35,9 +38,14 @@ Other scripts:
 
 ```bash
 npm run build       # production bundle in /dist
+npm run server      # Express API only (port 8080), for the ingredient library
+npm run dev:full    # Vite + Express together (proxied), for local ingredient-library testing
 npm run preview     # serve the production bundle locally
 npm run typecheck   # tsc --noEmit
 ```
+
+See [DEPLOYMENT.md](DEPLOYMENT.md) for deploying to Azure App Service and the
+full list of environment variables.
 
 ## What is mocked
 
@@ -45,15 +53,17 @@ npm run typecheck   # tsc --noEmit
 | --- | --- | --- |
 | Product presets | Dory & Emerald City geometry from packaging slides | "Current" is a placeholder using Dory specs |
 | Bottle presets | Volume + shoulder/neck from slides where available | Diameter is derived; some neck heights estimated (`estimated: true`) |
-| Surrogate math | Structure only | Every coefficient is placeholder — see `// TODO` markers |
+| Surrogate math | **Real** — packing fraction φ comes from a Gaussian Process fit to Aspherix DEM data, validated against full-bottle DEM runs (see below) | Outside the validated design space, predictions are extrapolation and are flagged `"Outside model range"` |
 | Status thresholds | Sensible defaults for UI behavior | Not tuned against real slack-fill acceptance criteria |
-| Comparison chart | Driven by the same surrogate function | Same placeholder math, just swept across presets |
+| Comparison chart | Driven by the same surrogate function | Same real math, just swept across presets |
 
 A persistent disclaimer banner is shown at all times and every output card carries a "Prototype surrogate prediction · not validated" line.
 
 ## Where real DEM coefficients connect
 
-All prediction logic lives in **[src/packaging/model/surrogateModel.ts](../src/packaging/model/surrogateModel.ts)**. The function signature is intentionally generic so a trained model can drop in without touching the UI:
+All prediction logic lives in **[src/packaging/model/surrogateModel.ts](../src/packaging/model/surrogateModel.ts)**, which calls **[src/packaging/model/realSurrogate.ts](../src/packaging/model/realSurrogate.ts)** for the packing fraction — a TypeScript port of the exact Gaussian Process posterior fit to Aspherix DEM simulations (fitted coefficients in `phi_gp.json` / `wall_gp.json`). This is not placeholder math; it's the live, DEM-validated model.
+
+**For the full story of how that model was built — DEM setup, the DOE, why a Gaussian Process, the validation runs, and how it was ported into this app — see [`src/packaging/model/SURROGATE_CREATION_PROCESS.md`](../src/packaging/model/SURROGATE_CREATION_PROCESS.md).** For the reference-level I/O contract, validation table, and retraining instructions, see [`src/packaging/model/INTEGRATION_HANDOFF.md`](../src/packaging/model/INTEGRATION_HANDOFF.md).
 
 ```ts
 predictFill({
@@ -62,15 +72,13 @@ predictFill({
 }): PredictionResult
 ```
 
-To connect real data:
+Remaining gaps between this prototype and a production-ready tool:
 
-1. **Replace placeholder coefficients** — every line marked `// TODO: replace with DEM-trained coefficient`.
-2. **Replace bounds in `MODEL_BOUNDS`** with the actual DEM training design-space limits.
-3. **Replace the `totalInternalHeightMm` approximation** (currently `shoulder + neck`) with measured CAD internal heights per bottle.
-4. **Optionally swap the implementation** of `predictFill()` to call a trained model artifact (ONNX runtime, REST endpoint, WASM kernel — whichever the M&S team ships).
-5. **Tighten the status rules** against real slack-fill regulatory thresholds (FDA / EU 21 CFR §100.100, etc.).
+1. **Bottle presets are still mocked** — neck heights are estimated for some bottles (`estimated: true` in `bottlePresets.ts`); replace with measured CAD internal heights.
+2. **Status thresholds** are sensible UI defaults, not tuned against real slack-fill regulatory thresholds (FDA / EU 21 CFR §100.100, etc.) — tighten before any compliance-facing use.
+3. **Coverage is limited to the validated design space** — see the caveats in `INTEGRATION_HANDOFF.md` §7 (λ range, squat/small bottles, DoryNew height sensitivity) before trusting an edge case.
 
-The component layer (`src/packaging/components/*`) reads only from the result shape, so swapping the engine is non-breaking.
+The component layer (`src/packaging/components/*`) reads only from the result shape, so extending the model is non-breaking.
 
 > New to the codebase? Each module has its own developer handoff guide at the
 > repo root: **[HANDOFF_PACKAGING.md](../HANDOFF_PACKAGING.md)** (the DEM filler
@@ -115,11 +123,16 @@ src/
     NutritionApp.tsx          ← dashboard shell
     components/               ← recipe input, facts label, worksheet, …
     engine/ + config/ + …     ← pure nutrient calculation engine
+    data/ingredientApi.ts     ← fetch client for the server-backed shared ingredient library
     __tests__/                ← vitest suite (98 tests)
     index.ts                  ← engine public API barrel
 
+server/                       ← Express API (serves dist/ + /api/ingredients); see DEPLOYMENT.md
+
 .github/
   copilot-instructions.md
+  workflows/
+    azure-webapp-deploy.yml
   skills/
     pg-professional-ui/SKILL.md
     surrogate-model-dashboard/SKILL.md

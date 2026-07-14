@@ -72,19 +72,27 @@ src/nutrition/
 │   └── staleConstants.ts ← Known Excel constant corrections (e.g. Vitamin D DV). Append here, never silent.
 │
 ├── data/
-│   └── exampleProduct.ts ← Reference CalcRequest for "Irovy Orange." Frozen against Excel values.
+│   ├── exampleProduct.ts ← Reference CalcRequest for "Irovy Orange." Frozen against Excel values.
+│   ├── ingredientLibrary.ts ← Built-in (shipped) supplier ingredient catalog, `LibraryIngredient[]`
+│   └── ingredientApi.ts     ← fetch client for the server-backed shared library (save/list)
 │
 ├── util/
 │   └── hash.ts           ← FNV-1a fingerprint of the CalcRequest for audit-trail reproducibility
 │
 ├── components/           ← React render-only components. None of these do math.
 │   ├── NutritionFactsLabel.tsx   ← Center panel: renders the actual Supplement Facts label
-│   ├── RecipeInputPanel.tsx      ← Left panel: editable formulation inputs
+│   ├── RecipeInputPanel.tsx      ← Left panel: editable formulation inputs, "Add from library"
+│   │                               dropdown, and a "Your saved ingredients" list where a
+│   │                               user-saved (non-built-in) entry can be permanently deleted
+│   │                               via a two-step confirm (click trash → "Yes, delete"/Cancel).
 │   ├── NutritionOutputPanel.tsx  ← Below the label: compliance verdict + per-nutrient flags
 │   ├── NutritionWorksheet.tsx    ← "Nutrition tab" — spreadsheet-style full nutrient breakdown
 │   ├── NutritionTutorial.tsx     ← "Learn" accordion: background on every calculation step
-│   ├── IngredientRow.tsx         ← One collapsible ingredient row in the recipe editor
-│   ├── CompletenessBadge.tsx     ← Status pill for ingredient nutrient completeness
+│   ├── IngredientRow.tsx         ← One collapsible ingredient row; collapsed header shows name,
+│   │                               %w/w input, and a trash button to remove the ingredient. The
+│   │                               expanded editor has a "Save to library" button that POSTs the
+│   │                               ingredient's current fields to the shared server library.
+│   ├── CompletenessBadge.tsx     ← (no longer used in the UI; retained for reference)
 │   └── CalorieMethodToggle.tsx   ← C+ / C / B segmented control (shared between two panels)
 │
 └── __tests__/            ← Vitest unit tests. Run with: npm test
@@ -139,7 +147,7 @@ The engine never emits a partial label. If any of these fire, `status` is `"bloc
 
 | Code | When it fires |
 |------|---------------|
-| `INGREDIENT_INCOMPLETE` | Any ingredient nutrient has `completeness: "unknown"` |
+| `INGREDIENT_INCOMPLETE` | Any ingredient nutrient has `completeness: "unknown"` in the data model. The UI no longer exposes a toggle for this, but the engine still enforces it — ingredients loaded from the library with unknown nutrients will block until their values are filled in. |
 | `METHOD_C_FIBER_SPLIT_MISSING` | Method C+ is selected but a fiber source has no soluble/insoluble split |
 | `OVERAGE_MISSING` | A floor nutrient (Class I or II) has no `overageFrac` in `nutrientPolicies` |
 
@@ -159,7 +167,20 @@ The engine never emits a partial label. If any of these fire, `status` is `"bloc
 | Add a second region | `config/regions/` — add a new file, register it in `regions/index.ts` |
 | Change label layout | `components/NutritionFactsLabel.tsx` |
 | Change the left input panel | `components/RecipeInputPanel.tsx` |
+| Change ingredient row layout or remove-button placement | `components/IngredientRow.tsx` |
 | Change compliance display below the label | `components/NutritionOutputPanel.tsx` |
+| Change the shared ingredient library API/persistence | `server/store.js` (Azure Table vs local file), `server/validate.js` (input rules), `data/ingredientApi.ts` (client) |
+
+> **The shared ingredient library needs a server.** `NutritionApp.tsx` fetches
+> `GET /api/ingredients` on mount, `POST /api/ingredients` when a user clicks
+> "Save to library" in `IngredientRow.tsx`, and `DELETE /api/ingredients/:id`
+> when a user confirms deleting an entry in `RecipeInputPanel.tsx`'s "Your saved
+> ingredients" list (the built-in 16 in `INGREDIENT_LIBRARY` are never
+> deletable — they don't have a server id). That API is implemented by
+> `server/index.js` (Express) — see [`docs/DEPLOYMENT.md`](docs/DEPLOYMENT.md)
+> for how it's hosted and configured on Azure. If the API is unreachable (e.g.
+> `npm run dev` without `npm run server`), the built-in `INGREDIENT_LIBRARY`
+> catalog still works; only the "saved by other sessions" list is affected.
 
 ---
 

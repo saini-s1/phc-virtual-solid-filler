@@ -1,7 +1,7 @@
 // Root shell for the Nutrition Calculator tab. Owns the single mutable CalcRequest
 // (the user's formulation) and the derived CalcResponse (everything the engine computed).
 // Passes slices of both down to pure-render panels; no nutrient math lives here.
-import { useMemo, useRef, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { Apple } from "lucide-react";
 import Header from "../shared/Header";
 import RecipeInputPanel from "./components/RecipeInputPanel";
@@ -10,9 +10,10 @@ import NutritionOutputPanel from "./components/NutritionOutputPanel";
 import NutritionWorksheet from "./components/NutritionWorksheet";
 import NutritionTutorial from "./components/NutritionTutorial";
 import { calcNutritionPanel } from "./index";
-import type { CalcRequest, CalorieMethod, Completeness, Ingredient, NutrientId } from "./index";
+import type { CalcRequest, CalorieMethod, Ingredient, NutrientId } from "./index";
 import { exampleProduct, blankProduct, makeBlankIngredient } from "./data/exampleProduct";
-import { INGREDIENT_LIBRARY, libraryToIngredient } from "./data/ingredientLibrary";
+import { INGREDIENT_LIBRARY, libraryToIngredient, type LibraryIngredient } from "./data/ingredientLibrary";
+import { fetchCustomIngredients, saveIngredientToLibrary, deleteCustomIngredient } from "./data/ingredientApi";
 
 type Props = {
   onBack: () => void;
@@ -34,22 +35,6 @@ function upsertNutrient(ing: Ingredient, nutrientId: NutrientId, per100g: number
 // hands the structured CalcResponse to pure-render panels. ALL nutrient math lives in
 // the engine (src/nutrition); nothing here computes amounts, rounds, or formats values.
 
-/** Completeness cycle for the demo: known → zero confirmed → unknown → back. */
-const NEXT_COMPLETENESS: Record<Completeness, Completeness> = {
-  known: "zeroConfirmed",
-  zeroConfirmed: "unknown",
-  unknown: "known",
-};
-
-/** Collapse one ingredient's per-nutrient completeness to a single row status. */
-function aggregateCompleteness(ing: Ingredient): Completeness {
-  if (ing.nutrients.some((n) => n.completeness === "unknown")) return "unknown";
-  if (ing.nutrients.length > 0 && ing.nutrients.every((n) => n.completeness === "zeroConfirmed")) {
-    return "zeroConfirmed";
-  }
-  return "known";
-}
-
 export default function NutritionApp({ onBack }: Props) {
   const [preset, setPreset] = useState<PresetId>("irovy-orange");
   const [request, setRequest] = useState<CalcRequest>(() => structuredClone(exampleProduct));
@@ -61,6 +46,15 @@ export default function NutritionApp({ onBack }: Props) {
   // linearly, so the math travels correctly without touching the engine.
   const [secondDoseEnabled, setSecondDoseEnabled] = useState(false);
   const [secondDoseWeightG, setSecondDoseWeightG] = useState(() => exampleProduct.servingWeightG * 2);
+
+  // Ingredients saved to the shared library by anyone (server-backed; see server/index.js).
+  // Loaded once on mount; a failure here is non-fatal — the built-in INGREDIENT_LIBRARY still works.
+  const [customLibrary, setCustomLibrary] = useState<LibraryIngredient[]>([]);
+  useEffect(() => {
+    fetchCustomIngredients()
+      .then(setCustomLibrary)
+      .catch((err) => console.warn("Could not load the shared ingredient library:", err));
+  }, []);
 
   // Single source of truth: the engine recomputes whenever the request changes.
   const response = useMemo(() => calcNutritionPanel(request), [request]);
@@ -98,19 +92,6 @@ export default function NutritionApp({ onBack }: Props) {
       recipe: prev.recipe.map((line) =>
         line.ingredientId === ingredientId ? { ...line, percentWW: fraction } : line,
       ),
-    }));
-
-  // Cycle every nutrient of the ingredient to one uniform state — driving the
-  // INGREDIENT_INCOMPLETE block on/off reversibly without touching the underlying
-  // per-100g values (so parity is preserved when cycled back to a known state).
-  const handleCycleCompleteness = (ingredientId: string) =>
-    setRequest((prev) => ({
-      ...prev,
-      ingredients: prev.ingredients.map((ing) => {
-        if (ing.id !== ingredientId) return ing;
-        const next = NEXT_COMPLETENESS[aggregateCompleteness(ing)];
-        return { ...ing, nutrients: ing.nutrients.map((n) => ({ ...n, completeness: next })) };
-      }),
     }));
 
   const handleAddIngredient = () =>
@@ -170,6 +151,34 @@ export default function NutritionApp({ onBack }: Props) {
 
   const handleRun = () => setRunId((n) => n + 1);
 
+  // Save a recipe ingredient's current name/calories/nutrients to the shared library so it
+  // appears in "Add from library" for everyone. Throws on failure (surfaced by IngredientRow).
+  const handleSaveIngredientToLibrary = async (ingredientId: string) => {
+    const ing = request.ingredients.find((i) => i.id === ingredientId);
+    if (!ing) return;
+    const per100g: Partial<Record<NutrientId, number>> = {};
+    for (const n of ing.nutrients) {
+      if (n.completeness !== "unknown") per100g[n.nutrientId] = n.per100g;
+    }
+    const saved = await saveIngredientToLibrary({
+      name: ing.name,
+      tradeName: ing.tradeName,
+      cas: ing.cas,
+      gcas: ing.gcas,
+      caloriesPer100g: ing.caloriesPer100g ?? 0,
+      per100g,
+    });
+    setCustomLibrary((prev) => [...prev, saved]);
+  };
+
+  // Permanently removes a ingredient the user (or a teammate) previously saved. Only ever
+  // called with ids from customLibrary — the 16 built-in template ingredients are never
+  // passed here and have no delete route.
+  const handleDeleteFromLibrary = async (id: string) => {
+    await deleteCustomIngredient(id);
+    setCustomLibrary((prev) => prev.filter((lib) => lib.id !== id));
+  };
+
   return (
     <div className="flex min-h-screen flex-col">
       <Header
@@ -186,14 +195,12 @@ export default function NutritionApp({ onBack }: Props) {
           <div className="w-full lg:w-[460px] lg:flex-shrink-0">
             <RecipeInputPanel
               request={request}
-              panel={response.panel}
               preset={preset}
               onLoadPreset={handleLoadPreset}
               onServingChange={handleServingChange}
               onServingsPerContainerChange={handleServingsPerContainerChange}
               onMethodChange={handleMethodChange}
               onPercentChange={handlePercentChange}
-              onCycleCompleteness={handleCycleCompleteness}
               onAddIngredient={handleAddIngredient}
               onAddFromLibrary={handleAddFromLibrary}
               onRemoveIngredient={handleRemoveIngredient}
@@ -201,6 +208,9 @@ export default function NutritionApp({ onBack }: Props) {
               onNutrientChange={handleNutrientChange}
               onCaloriesChange={handleCaloriesChange}
               onRun={handleRun}
+              customLibrary={customLibrary}
+              onSaveToLibrary={handleSaveIngredientToLibrary}
+              onDeleteFromLibrary={handleDeleteFromLibrary}
               secondDoseEnabled={secondDoseEnabled}
               secondDoseWeightG={secondDoseWeightG}
               onToggleSecondDose={setSecondDoseEnabled}

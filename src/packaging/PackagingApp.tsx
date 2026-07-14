@@ -12,9 +12,14 @@ import InputPanel, {
 import BottleVisualizer from "./components/BottleVisualizer";
 import OutputPanel from "./components/OutputPanel";
 import ComparisonChart from "./components/ComparisonChart";
+import SurrogateExplainer from "./components/SurrogateExplainer";
 
 import { getGummyById } from "./data/productPresets";
-import { getBottleById } from "./data/bottlePresets";
+import {
+  getBottleById,
+  makeCustomBottle,
+  CUSTOM_BOTTLE_ID,
+} from "./data/bottlePresets";
 import {
   predictFill,
   recommendCountForTarget,
@@ -38,7 +43,13 @@ export default function PackagingApp({ onBack }: Props) {
   const [runId, setRunId] = useState(0);
 
   const gummy = getGummyById(state.gummyId);
-  const bottle = getBottleById(state.bottleId);
+  const bottle =
+    state.bottleId === CUSTOM_BOTTLE_ID
+      ? makeCustomBottle(
+          state.customBottle?.volumeMl ?? 500,
+          state.customBottle?.shape ?? "round"
+        )
+      : getBottleById(state.bottleId);
 
   // Resolve effective gummy geometry (custom overrides win) and assemble inputs.
   const inputs = useMemo<PredictionInputs>(() => {
@@ -48,6 +59,10 @@ export default function PackagingApp({ onBack }: Props) {
       shoulderHeightMm: bottle.shoulderHeightMm,
       neckHeightMm: bottle.neckHeightMm,
       bodyWidthMm: bottle.bodyWidthMm,
+      bodyDepthMm: bottle.bodyDepthMm,
+      cornerRadiusMm: bottle.cornerRadiusMm,
+      bottleShape: bottle.shape,
+      family: gummy.family,
       radiusTopMm: g.radiusTopMm,
       radiusBottomMm: g.radiusBottomMm,
       heightMm: g.heightMm,
@@ -105,13 +120,17 @@ export default function PackagingApp({ onBack }: Props) {
             <ComparisonChart gummy={gummy} bottle={bottle} count={state.count} />
           </div>
 
+          <div className="animate-fade-up [animation-delay:360ms]">
+            <SurrogateExplainer />
+          </div>
+
         </div>
       </main>
 
       <footer className="border-t border-ink-100 bg-white/60 backdrop-blur">
         <div className="mx-auto flex max-w-[1400px] flex-wrap items-center justify-between gap-2 px-6 py-3 text-[11px] text-ink-400">
           <p className="font-mono">
-            Surrogate-model mockup · not for technical use
+            DEM-validated surrogate model · prototype interface
           </p>
         </div>
       </footer>

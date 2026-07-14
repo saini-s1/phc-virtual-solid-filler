@@ -1,0 +1,72 @@
+name: Deploy to Azure Web App
+
+# Builds the Vite SPA, prunes dev-only dependencies, and deploys the Express
+# server (server/) + built assets (dist/) to an Azure App Service Web App.
+#
+# Auth: OpenID Connect (OIDC) federated credentials — no secret/password is
+# stored in GitHub. This is Microsoft's current recommended method (over the
+# older publish-profile approach). Required one-time Azure AD setup and the
+# GitHub secrets below are documented in docs/DEPLOYMENT.md.
+#
+# Required GitHub repo secrets (Settings → Secrets and variables → Actions):
+#   AZURE_CLIENT_ID       - the Azure AD App Registration's Application (client) ID
+#   AZURE_TENANT_ID       - your Azure AD tenant ID
+#   AZURE_SUBSCRIPTION_ID - the subscription containing the Web App
+#
+# Required GitHub repo variable (or hardcode below):
+#   AZURE_WEBAPP_NAME             - the Web App resource name in Azure.
+#
+# Runtime configuration lives in Azure App Service → Configuration → Application
+# settings (NOT in this repo): AZURE_STORAGE_CONNECTION_STRING, NODE_ENV=production.
+# See docs/DEPLOYMENT.md for the full list and rationale.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  id-token: write # required to fetch the OIDC token for azure/login
+  contents: read
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20.x"
+          cache: "npm"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Type check
+        run: npm run typecheck
+
+      - name: Run tests
+        run: npm test
+
+      - name: Build frontend
+        run: npm run build
+
+      - name: Remove dev-only dependencies from the deploy artifact
+        run: npm prune --omit=dev
+
+      - name: Log in to Azure (OIDC)
+        uses: azure/login@v2
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: Deploy to Azure Web App
+        uses: azure/webapps-deploy@v3
+        with:
+          app-name: ${{ vars.AZURE_WEBAPP_NAME }}
+          package: .
+
