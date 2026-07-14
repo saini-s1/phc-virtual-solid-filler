@@ -7,8 +7,6 @@ import Header from "../shared/Header";
 import RecipeInputPanel from "./components/RecipeInputPanel";
 import NutritionFactsLabel from "./components/NutritionFactsLabel";
 import NutritionOutputPanel from "./components/NutritionOutputPanel";
-import NutritionWorksheet from "./components/NutritionWorksheet";
-import NutritionTutorial from "./components/NutritionTutorial";
 import { calcNutritionPanel } from "./index";
 import type { CalcRequest, CalorieMethod, Ingredient, NutrientId } from "./index";
 import { exampleProduct, blankProduct, makeBlankIngredient } from "./data/exampleProduct";
@@ -230,16 +228,6 @@ export default function NutritionApp({ onBack }: Props) {
             />
             <NutritionOutputPanel response={response} />
           </div>
-        </div>
-
-        {/* Below-fold: the Excel "Nutrition tab" worksheet — totals → DV → %DV → declared by class */}
-        <div className="mt-5">
-          <NutritionWorksheet response={response} />
-        </div>
-
-        {/* Below-fold tutorial — scroll-down background on every number above */}
-        <div className="mt-5">
-          <NutritionTutorial />
         </div>
       </main>
     </div>

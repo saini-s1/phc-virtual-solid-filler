@@ -11,7 +11,6 @@ import InputPanel, {
 } from "./components/InputPanel";
 import BottleVisualizer from "./components/BottleVisualizer";
 import OutputPanel from "./components/OutputPanel";
-import ComparisonChart from "./components/ComparisonChart";
 import SurrogateExplainer from "./components/SurrogateExplainer";
 
 import { getGummyById } from "./data/productPresets";
@@ -116,14 +115,9 @@ export default function PackagingApp({ onBack }: Props) {
         </div>
 
         <div className="mt-5 grid gap-5">
-          <div className="animate-fade-up [animation-delay:280ms]">
-            <ComparisonChart gummy={gummy} bottle={bottle} count={state.count} />
-          </div>
-
           <div className="animate-fade-up [animation-delay:360ms]">
             <SurrogateExplainer />
           </div>
-
         </div>
       </main>
 

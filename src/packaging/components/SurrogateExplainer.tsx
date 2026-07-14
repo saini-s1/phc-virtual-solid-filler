@@ -17,16 +17,6 @@ import {
   VALIDATED_BOTTLE_LAMBDA,
 } from "../model/surrogateModel";
 
-// Full-bottle validation runs (model/validation_table.csv, PASS rows).
-const VALIDATION_ROWS = [
-  { run: "VB_EC_500", fam: "EC", H: 9.5, lam: 4.21, fillErr: "−1.3%", phiErr: "+0.007" },
-  { run: "VB_EC_750", fam: "EC", H: 9.5, lam: 4.66, fillErr: "−1.3%", phiErr: "+0.006" },
-  { run: "VB_EC_750_H115", fam: "EC", H: 11.5, lam: 4.47, fillErr: "+0.4%", phiErr: "−0.004" },
-  { run: "VB_DN_500", fam: "DoryNew", H: 13, lam: 3.91, fillErr: "+0.6%", phiErr: "−0.006" },
-  { run: "VB_DN_900", fam: "DoryNew", H: 13, lam: 4.65, fillErr: "−1.6%", phiErr: "+0.006" },
-  { run: "VB_DN_900_H110", fam: "DoryNew", H: 11, lam: 4.84, fillErr: "−2.5%", phiErr: "+0.012" },
-];
-
 const STEPS = [
   {
     icon: Cpu,
@@ -278,53 +268,6 @@ export default function SurrogateExplainer() {
           </div>
         </div>
       </div>
-
-      {/* Validation table */}
-      <div className="mt-6">
-        <p className="eyebrow">DEM validation results</p>
-        <p className="mt-1 text-xs text-ink-500">
-          Six held-out full-bottle DEM runs — φ within ±0.007, fill within ±1.6%.
-        </p>
-        <div className="mt-3 overflow-x-auto">
-          <table className="w-full min-w-[560px] border-collapse text-xs">
-            <thead>
-              <tr className="border-b border-ink-200 text-left text-ink-500">
-                <th className="py-2 pr-3 font-semibold">Run</th>
-                <th className="py-2 pr-3 font-semibold">Family</th>
-                <th className="py-2 pr-3 font-semibold">H (mm)</th>
-                <th className="py-2 pr-3 font-semibold">λ</th>
-                <th className="py-2 pr-3 font-semibold">Fill error</th>
-                <th className="py-2 pr-3 font-semibold">φ error</th>
-                <th className="py-2 font-semibold">Verdict</th>
-              </tr>
-            </thead>
-            <tbody className="text-ink-700">
-              {VALIDATION_ROWS.map((r) => (
-                <tr key={r.run} className="border-b border-ink-100">
-                  <td className="py-2 pr-3 font-mono">{r.run}</td>
-                  <td className="py-2 pr-3">{r.fam}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.H}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.lam}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.fillErr}</td>
-                  <td className="py-2 pr-3 tabular-nums">{r.phiErr}</td>
-                  <td className="py-2">
-                    <span className="pill bg-emerald-100 text-emerald-700">
-                      PASS
-                    </span>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
-
-      <p className="mt-6 rounded-xl border border-ink-100 bg-ink-50 px-4 py-3 text-xs leading-relaxed text-ink-500">
-        <strong className="text-ink-700">Prototype note.</strong> The φ model is
-        real and DEM-validated; the bottle-fill geometry uses a simplified
-        parametric profile. Validate against measured CAD volumes before relying
-        on any output.
-      </p>
     </section>
   );
 }
