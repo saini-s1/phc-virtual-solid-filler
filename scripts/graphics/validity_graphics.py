@@ -14,8 +14,8 @@ wall_gp.json) and re-runs the same Gaussian-Process evaluation path to draw:
     3. validity_map.png       -- 2D go/no-go map over (height, lambda): green =
        DEM-validated, amber = usable-but-unvalidated, red = do NOT trust.
 
-Run:  python validity_graphics.py
-Outputs the three PNGs next to this file (repo root) so they are easy to find.
+Run:  python scripts/graphics/validity_graphics.py (from the repo root)
+Outputs the three PNGs into graphics/ at the repo root so they are easy to find.
 
 NOTE: prototype surrogate visualization -- illustrative of model boundaries,
 not a validated engineering deliverable.
@@ -63,7 +63,10 @@ MOLD_A = 0.391
 MOLD_B = 14.3533
 
 HERE = Path(__file__).resolve().parent
-MODEL_DIR = HERE / "src" / "packaging" / "model"
+REPO_ROOT = HERE.parent.parent
+MODEL_DIR = REPO_ROOT / "src" / "packaging" / "model"
+GRAPHICS = REPO_ROOT / "graphics"
+GRAPHICS.mkdir(exist_ok=True)
 
 with open(MODEL_DIR / "phi_gp.json", "r", encoding="utf-8") as fh:
     PHI_GP = json.load(fh)["families"]
@@ -232,7 +235,7 @@ def fig_wall_law():
 
     _footer(fig)
     fig.tight_layout(rect=(0, 0.03, 1, 1))
-    out = HERE / "wall_law_validity.png"
+    out = GRAPHICS / "wall_law_validity.png"
     fig.savefig(out, facecolor="white")
     plt.close(fig)
     return out
@@ -291,7 +294,7 @@ def fig_gp_domain():
                  fontsize=14, color=PG_NAVY, fontweight="bold")
     _footer(fig)
     fig.tight_layout(rect=(0, 0.04, 1, 0.95))
-    out = HERE / "gp_domain_validity.png"
+    out = GRAPHICS / "gp_domain_validity.png"
     fig.savefig(out, facecolor="white")
     plt.close(fig)
     return out
@@ -363,7 +366,7 @@ def fig_validity_map():
                fontsize=8.6, facecolor="white", edgecolor=PG_SLATE_LT,
                bbox_to_anchor=(0.5, 0.0))
     fig.tight_layout(rect=(0, 0.10, 1, 0.94))
-    out = HERE / "validity_map.png"
+    out = GRAPHICS / "validity_map.png"
     fig.savefig(out, facecolor="white")
     plt.close(fig)
     return out

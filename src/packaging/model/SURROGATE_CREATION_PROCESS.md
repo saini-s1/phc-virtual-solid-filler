@@ -144,7 +144,7 @@ Once there was data to fit (φ vs. λ, and φ vs. H/ρ), the next decision was
 *what kind of curve to fit through it*. A simple straight-line (or low-order
 polynomial) fit was considered and rejected in favor of a **Gaussian Process
 (GP)** regression. The reasoning (visualized in
-[`gp_vs_slope_showcase.py`](../../../gp_vs_slope_showcase.py) at the repo root):
+[`gp_vs_slope_showcase.py`](../../../scripts/graphics/gp_vs_slope_showcase.py) in `scripts/graphics/`):
 
 - A straight-line fit will confidently extrapolate a trend through what is
   largely run-to-run DEM noise, and has **no concept of where it stops being
@@ -377,7 +377,7 @@ just documented in a markdown file. Two places do this:
   `(H, ρ)` box or the validated λ range (Step 11's caveats) as `"Outside model
   range"` rather than silently returning a number.
 - **In presentation materials:** a set of standalone Python/matplotlib scripts
-  at the repo root (`dem_surrogate_showcase.py`, `gp_vs_slope_showcase.py`,
+  in `scripts/graphics/` (`dem_surrogate_showcase.py`, `gp_vs_slope_showcase.py`,
   `prediction_accuracy_graphics.py`, `surrogate_graphics_pack.py`,
   `validity_graphics.py`, `bottle_size_trends.py`) generate exec-facing
   graphics — the GP fit with its training points, the wall-law fit, the

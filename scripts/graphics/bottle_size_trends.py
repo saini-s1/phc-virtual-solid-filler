@@ -46,7 +46,8 @@ PG_BG    = "#f8fafc"
 WARN_AMBER = "#d97706"
 
 HERE     = Path(__file__).resolve().parent
-GRAPHICS = HERE / "graphics"
+REPO_ROOT = HERE.parent.parent
+GRAPHICS = REPO_ROOT / "graphics"
 GRAPHICS.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------

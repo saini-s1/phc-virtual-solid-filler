@@ -26,11 +26,12 @@ from matplotlib.patches import Patch
 from matplotlib.lines import Line2D
 
 HERE = Path(__file__).resolve().parent
-MODEL_DIR = HERE / "src" / "packaging" / "model"
+REPO_ROOT = HERE.parent.parent
+MODEL_DIR = REPO_ROOT / "src" / "packaging" / "model"
 sys.path.insert(0, str(MODEL_DIR))
 import gp_surrogate as gpm  # noqa: E402
 
-GRAPHICS = HERE / "graphics"
+GRAPHICS = REPO_ROOT / "graphics"
 GRAPHICS.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------

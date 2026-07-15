@@ -3,7 +3,7 @@ import type { NutrientId } from "../types/nutrients";
 
 // ─────────────────────────────────────────────────────────────────────────────
 // Ingredient library — transcribed verbatim from the "Ingredients" tab of
-// "Nutrition Calculator.template .xlsx" (the source-of-truth template).
+// "docs/nutrition-reference/Nutrition Calculator.template .xlsx" (the source-of-truth template).
 //
 // Every entry carries the supplier Trade Name, CAS registry number and P&G GCAS
 // material code exactly as listed, plus the per-100 g nutrient profile the Excel

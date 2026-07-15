@@ -1,6 +1,7 @@
 import openpyxl, warnings
+from pathlib import Path
 warnings.filterwarnings("ignore")
-PATH = r"Nutrition Calculator.template .xlsx"
+PATH = Path(__file__).resolve().parent.parent / "docs" / "nutrition-reference" / "Nutrition Calculator.template .xlsx"
 wbF = openpyxl.load_workbook(PATH, data_only=False)  # formulas
 wbV = openpyxl.load_workbook(PATH, data_only=True)   # cached values
 

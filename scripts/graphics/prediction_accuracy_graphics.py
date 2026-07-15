@@ -13,14 +13,14 @@ surrogate's prediction (pred_*). We plot measured-vs-predicted, the residuals
 across bottle size (lambda), and a validation scorecard with the real error
 statistics.
 
-Outputs (next to this file, repo root):
+Outputs (written to graphics/ at the repo root):
     1. prediction_accuracy.png  -- 3-panel: parity + residual-vs-bottle-size +
        phi-vs-bottle-size with the DEM points overlaid on the surrogate curve.
     2. validation_metrics.png   -- scorecard: MAE / RMSE / max error / bias for
        each output, per-run error bars, PASS rate, and the honest slack-fill
        calibration gap.
 
-Run:  python prediction_accuracy_graphics.py
+Run:  python scripts/graphics/prediction_accuracy_graphics.py (from the repo root)
 
 NOTE: prototype surrogate visualization. The DEM validation set is small (a
 handful of expensive full-bottle runs) -- these plots report exactly those
@@ -100,7 +100,10 @@ TRAINED_H = {"EC": (6.5, 11.5), "DoryNew": (10.0, 15.0)}
 TRAINED_RHO = (1425, 1650)
 
 HERE = Path(__file__).resolve().parent
-MODEL_DIR = HERE / "src" / "packaging" / "model"
+REPO_ROOT = HERE.parent.parent
+MODEL_DIR = REPO_ROOT / "src" / "packaging" / "model"
+GRAPHICS = REPO_ROOT / "graphics"
+GRAPHICS.mkdir(exist_ok=True)
 
 with open(MODEL_DIR / "phi_gp.json", "r", encoding="utf-8") as fh:
     PHI_GP = json.load(fh)["families"]
@@ -389,7 +392,7 @@ def fig_accuracy(pairs, dem_only, wall_pts):
     _footer(fig, f"PHC Virtual Solid Filler  \u00b7  prototype DEM surrogate  \u00b7  "
                  f"distilled from {N_DEM_TOTAL} real DEM simulations "
                  f"({N_PHI_DOE} packing + {N_WALL} wall-law + {N_FULLBOTTLE} full-bottle)")
-    out = HERE / "prediction_accuracy.png"
+    out = GRAPHICS / "prediction_accuracy.png"
     fig.savefig(out, facecolor="white")
     plt.close(fig)
     return out
@@ -523,7 +526,7 @@ def fig_metrics(pairs, dem_only):
 
     _footer(fig, "PHC Virtual Solid Filler  \u00b7  prototype DEM surrogate  \u00b7  "
                  "statistics computed directly from validation_table.csv")
-    out = HERE / "validation_metrics.png"
+    out = GRAPHICS / "validation_metrics.png"
     fig.savefig(out, facecolor="white")
     plt.close(fig)
     return out

@@ -1,7 +1,8 @@
 import openpyxl, re, warnings
+from pathlib import Path
 warnings.filterwarnings("ignore")
 
-PATH = r"Nutrition Calculator.template .xlsx"
+PATH = Path(__file__).resolve().parent.parent / "docs" / "nutrition-reference" / "Nutrition Calculator.template .xlsx"
 wb = openpyxl.load_workbook(PATH, data_only=False)
 
 # 1) Reference/formula-list sheet: dump every non-empty cell (this is the human doc of rules)

@@ -69,8 +69,9 @@ NOMINAL_H   = {"EC": 9.5,  "DoryNew": 13.0}
 NOMINAL_RHO = 1425.0
 
 HERE      = Path(__file__).resolve().parent
-MODEL_DIR = HERE / "src" / "packaging" / "model"
-GRAPHICS  = HERE / "graphics"
+REPO_ROOT = HERE.parent.parent
+MODEL_DIR = REPO_ROOT / "src" / "packaging" / "model"
+GRAPHICS  = REPO_ROOT / "graphics"
 GRAPHICS.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------

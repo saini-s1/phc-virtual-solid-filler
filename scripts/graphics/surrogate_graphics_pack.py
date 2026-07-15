@@ -78,8 +78,9 @@ HEADSPACE_FRACTION = 0.18
 VG_MM3 = {"EC": 1753.1, "DoryNew": 2710.4}
 
 HERE      = Path(__file__).resolve().parent
-MODEL_DIR = HERE / "src" / "packaging" / "model"
-GRAPHICS  = HERE / "graphics"
+REPO_ROOT = HERE.parent.parent
+MODEL_DIR = REPO_ROOT / "src" / "packaging" / "model"
+GRAPHICS  = REPO_ROOT / "graphics"
 GRAPHICS.mkdir(exist_ok=True)
 
 # ---------------------------------------------------------------------------

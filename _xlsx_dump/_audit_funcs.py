@@ -1,8 +1,9 @@
 import openpyxl, re, warnings
 from collections import Counter
+from pathlib import Path
 warnings.filterwarnings("ignore")
 
-PATH = r"Nutrition Calculator.template .xlsx"
+PATH = Path(__file__).resolve().parent.parent / "docs" / "nutrition-reference" / "Nutrition Calculator.template .xlsx"
 wb = openpyxl.load_workbook(PATH, data_only=False)
 
 FUNCS = ["ROUNDUP", "ROUNDDOWN", "MROUND", "ROUND", "CEILING", "FLOOR",
