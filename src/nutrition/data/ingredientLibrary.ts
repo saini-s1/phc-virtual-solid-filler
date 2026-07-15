@@ -1,7 +1,6 @@
 import type { Ingredient, IngredientNutrient } from "../types/inputs";
 import type { NutrientId } from "../types/nutrients";
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Ingredient library — transcribed verbatim from the "Ingredients" tab of
 // "docs/nutrition-reference/Nutrition Calculator.template .xlsx" (the source-of-truth template).
 //
@@ -15,7 +14,6 @@ import type { NutrientId } from "../types/nutrients";
 // the workbook that list a CAS/GCAS but no nutrient data (Malic Acid, Ace-K, Berry
 // Flavor, Pink Lemonade, Vitamin Blend, Red 40, Blue 1) are intentionally omitted
 // until their per-100 g values are supplied.
-// ─────────────────────────────────────────────────────────────────────────────
 
 /** A catalog ingredient with full identity metadata and a per-100 g nutrient map. */
 export interface LibraryIngredient {

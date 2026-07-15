@@ -52,9 +52,7 @@ type Props = {
   runId: number;
 };
 
-// ──────────────────────────────────────────────────────────────────────────
 // World + simulation constants
-// ──────────────────────────────────────────────────────────────────────────
 const HX = 1; // fill region half-width (region spans -HX..HX in X and Z)
 const WALL = 0.93; // collision wall radius — slightly inside HX so gummies
 //                    sit *within* the glass instead of being sliced by the clip
@@ -77,13 +75,11 @@ const SHRINK_K = 0.22; // shrink-out easing when a gummy is removed
 const RF_K = 0.1; // radius easing (smooth morph on preset/bottle change)
 const SPIN_DAMP = 0.9; // tumble decay
 
-// ──────────────────────────────────────────────────────────────────────────
 // Gummy mesh — a multivitamin / Metamucil-style gummy built with LatheGeometry:
 // a flat-ish base with a softly rounded edge that swells into a smooth domed
 // top. Footprint radius 0.5, total height 1.0, centered on its own origin so
 // the instanced scaling (footprint 2·rf, height 2·rf·FLAT) is unchanged — the
 // packing simulation is untouched, only the silhouette differs.
-// ──────────────────────────────────────────────────────────────────────────
 function buildGummyGeometry(): THREE.LatheGeometry {
   const R = 0.5; // footprint radius
   const H = 1.0; // total height (flat base → dome apex)
@@ -127,9 +123,7 @@ const GUMMY_GEOMETRY = buildGummyGeometry();
 // Blue vitamin-gummy shades (subtle variation gives the pile depth).
 const GUMMY_HEX = ["#4f8ef7", "#3c72e8", "#5b9bff", "#2f63dd", "#6aa6ff"];
 
-// ──────────────────────────────────────────────────────────────────────────
 // Deterministic RNG
-// ──────────────────────────────────────────────────────────────────────────
 function mulberry32(seed: number) {
   let a = seed >>> 0;
   return () => {
@@ -141,11 +135,9 @@ function mulberry32(seed: number) {
   };
 }
 
-// ──────────────────────────────────────────────────────────────────────────
 // Live simulation state — persistent buffers (one slot per possible gummy).
 // Physics runs in scaled space: positions are (x, sy, z) where sy = worldY/FLAT,
 // so each oblate gummy collides as a sphere of radius rf.
-// ──────────────────────────────────────────────────────────────────────────
 type Sim = {
   x: Float32Array;
   z: Float32Array;
@@ -236,7 +228,6 @@ function spawn(sim: Sim, i: number, fullHeight: number, baseR: number) {
   sim.alive[i] = 1;
 }
 
-// ──────────────────────────────────────────────────────────────────────────
 // Camera — orthographic, straight-on, floor pinned to the bottom edge.
 // View spans x ∈ [-HX, HX], y ∈ [0, fullHeight].
 //
@@ -248,7 +239,6 @@ function spawn(sim: Sim, i: number, fullHeight: number, baseR: number) {
 // later puts our values back, swapping bottles again would not recover them.
 // We mark the camera `manual` so R3F leaves it alone, then re-assert the
 // frustum every frame as a belt-and-braces safety net.
-// ──────────────────────────────────────────────────────────────────────────
 function applyCameraBounds(cam: THREE.OrthographicCamera, fullHeight: number) {
   cam.left = -HX;
   cam.right = HX;
@@ -292,9 +282,7 @@ function CameraRig({ fullHeight }: { fullHeight: number }) {
   return null;
 }
 
-// ──────────────────────────────────────────────────────────────────────────
 // The live pile.
-// ──────────────────────────────────────────────────────────────────────────
 function Pile({
   count,
   baseR,

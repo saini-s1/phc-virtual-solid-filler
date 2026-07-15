@@ -292,12 +292,10 @@ function Range({
   );
 }
 
-// ---------------------------------------------------------------------------
 // Tiny dependency-free math renderer. Enough to typeset the handful of
 // equations above crisply (fractions, sub/superscripts, Greek via unicode)
 // without pulling in KaTeX/MathJax. Everything is inline-flex so baselines and
 // fraction bars line up regardless of surrounding text size.
-// ---------------------------------------------------------------------------
 function EqBlock({
   children,
   caption,

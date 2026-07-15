@@ -9,14 +9,7 @@ type Props = {
   onSelect: (view: AppView) => void;
 };
 
-/**
- * Futuristic module-selector landing screen for the PHC Modeling Suite.
- *
- * Two large tiles route into the existing surrogate dashboards. The visual
- * language is consistent with the rest of the app (P&G blue + cyan, ink
- * neutrals, hairline borders) with a few subtle "console" touches —
- * corner brackets, scan lines, monospaced module tags, animated grid.
- */
+/** Landing screen with the two module-selector tiles. */
 export default function HomePage({ onSelect }: Props) {
   return (
     <div className="relative flex min-h-screen flex-col overflow-hidden">
@@ -92,8 +85,7 @@ export default function HomePage({ onSelect }: Props) {
   );
 }
 
-/* ──────────────────────────────────────────────────────────── tile */
-
+// Module tile
 type TileAccent = "cyan" | "lime";
 
 type ModuleTileProps = {
@@ -240,8 +232,7 @@ function ModuleTile({
   );
 }
 
-/* ──────────────────────────────────────────────────────── decorations */
-
+// Background decorations
 function CornerBracket({ className = "" }: { className?: string }) {
   return (
     <svg

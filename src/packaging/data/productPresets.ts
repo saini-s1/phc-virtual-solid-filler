@@ -1,28 +1,25 @@
-// ---------------------------------------------------------------------------
-// gummy (product) presets — prototype data.
+// Gummy (product) presets — prototype data.
 //
-// each gummy is faked as a truncated cone (a "frustum"): a wide bottom, a
-// narrower top, and a height. it's a rough stand-in for a real domed/tapered
-// gummy but it's enough to drive the model and the 3d view.
+// Each gummy is modeled as a truncated cone (a "frustum"): a wide bottom, a
+// narrower top, and a height. It's a rough stand-in for a real domed/tapered
+// gummy but it's enough to drive the model and the 3D view.
 //   radiusTopMm    -> radius of the smaller top face
 //   radiusBottomMm -> radius of the larger bottom face
 //   heightMm       -> overall gummy height
-// density + weight are stored straight so the model can use measured mass.
 //
-// >>> WANT TO ADD A NEW GUMMY? just copy one of the objects in GUMMY_PRESETS
-// below, give it a new id + name, and punch in the numbers. the dropdown, the
-// model and the comparison chart all pick it up automatically. <<<
+// To add a new gummy, copy one of the objects in GUMMY_PRESETS below, give it
+// a new id + name, and fill in the numbers — the dropdown, model, and
+// comparison chart all pick it up automatically.
 //
-// note: these are starter numbers, not spec sheets. replace with the real p&g
-// phc dimensions before anyone leans on an output.
-// ---------------------------------------------------------------------------
+// Note: these are starter numbers, not spec sheets. Replace with the real
+// P&G PHC dimensions before anyone leans on an output.
 
 // The two real DEM reference mold shapes the surrogate was trained on.
 // Every UI gummy maps onto one of these families (see model/realSurrogate.ts).
 export type GummyFamily = "EC" | "DoryNew";
 
 export type GummyPreset = {
-  id: "current" | "dory" | "emerald";
+  id: "dory" | "emerald";
   name: string;
   shortName: string;
   description: string;
@@ -39,13 +36,10 @@ export type GummyPreset = {
   weightG: number; // single-gummy product weight, g
   // Display
   accentColor: string;
-  isPlaceholder?: boolean;
 };
 
-// volume of a truncated cone (frustum) in mL.
+// Volume of a truncated cone (frustum) in mL.
 //   V = (pi*h / 3) * (r1^2 + r1*r2 + r2^2)   -- result is in mm^3, /1000 -> mL
-// used all over the place (model, input panel, comparison chart) so it lives
-// here next to the geometry it measures.
 export function frustumVolumeMl(
   radiusTopMm: number,
   radiusBottomMm: number,

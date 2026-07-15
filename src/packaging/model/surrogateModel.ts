@@ -1,4 +1,3 @@
-// ---------------------------------------------------------------------------
 // surrogateModel.ts — the prediction entry point for the Virtual Solid Filler.
 //
 // This is now backed by the REAL DEM-trained surrogate (see
@@ -8,7 +7,6 @@
 //
 // The input/output shapes are kept stable on purpose so the UI panels don't
 // need to know the model changed — they still read `PredictionResult`.
-// ---------------------------------------------------------------------------
 
 import {
   evaluatePhi,

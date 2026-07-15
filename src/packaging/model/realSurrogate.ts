@@ -1,4 +1,3 @@
-// ---------------------------------------------------------------------------
 // realSurrogate.ts — TypeScript port of the DEM-trained packing surrogate.
 //
 // THIS IS THE REAL MODEL. Unlike the old placeholder math, the packing
@@ -20,7 +19,6 @@
 //
 // >>> To retrain the model, rerun the Python pipeline and drop in fresh
 //     phi_gp.json / wall_gp.json. Nothing in this file changes. <<<
-// ---------------------------------------------------------------------------
 
 import phiGpRaw from "./phi_gp.json";
 import wallGpRaw from "./wall_gp.json";
@@ -69,11 +67,9 @@ const WALL_GP = (wallGpRaw as unknown as {
   families: Record<string, WallGpFamily>;
 }).families;
 
-// ---------------------------------------------------------------------------
 // The validated design space (mirrors README_BUNDLE.md "Where the model is
 // VALID" + gummy_bottle_model.py VALID_LAMBDA). Outside any of these the
 // prediction is an EXTRAPOLATION and must be flagged, never trusted.
-// ---------------------------------------------------------------------------
 export const VALID_LAMBDA: [number, number] = [2.5, 6.0];
 // Full-bottle DEM validation only exists in this tighter λ band.
 export const VALIDATED_BOTTLE_LAMBDA: [number, number] = [3.9, 4.7];
@@ -109,9 +105,7 @@ export function gummyVolumeMm3(family: GummyFamily, H_mm: number): number {
   return REF_VG_MM3[family] * sxy * sxy * sz;
 }
 
-// ---------------------------------------------------------------------------
 // Pure linear algebra (SPD systems) — matches gp_surrogate.py exactly.
-// ---------------------------------------------------------------------------
 function rbf(a: number[], b: number[], ls: number[], sf2: number): number {
   let s = 0;
   for (let d = 0; d < a.length; d++) {
@@ -142,10 +136,8 @@ function logisticSigmoid(x: number): number {
   return z / (1 + z);
 }
 
-// ---------------------------------------------------------------------------
 // GP(H, ρ) gummy-parameter trend  (gp_surrogate.py PhiSurrogate.predict)
 // Returns φ plus a 90% credible interval and an in-domain flag.
-// ---------------------------------------------------------------------------
 export interface GpPhiResult {
   phi: number | null;
   phiLo: number;
@@ -210,10 +202,8 @@ function gpPhiHRho(
   };
 }
 
-// ---------------------------------------------------------------------------
 // φ_eff(λ) wall / finite-size law  (wall_gp.py predict)
 //   φ_eff(λ) = φ_inf·(1 − c/λ)  +  zero-mean residual GP(1/λ)
-// ---------------------------------------------------------------------------
 export interface WallPhiResult {
   phi: number;
   phiLo: number;
@@ -254,12 +244,10 @@ function wallPhiEff(family: GummyFamily, lam: number, z = 1.645): WallPhiResult 
   };
 }
 
-// ---------------------------------------------------------------------------
 // The combined φ used for a bottle, exactly as gummy_bottle_model.evaluate():
 //   φ_used = φ_eff(λ) · [ GP(H, ρ) / GP(H_nom, ρ_nom) ]
 // The wall law sets the absolute level + λ dependence; the GP ratio carries
 // the relative gummy-height / density trend.
-// ---------------------------------------------------------------------------
 export interface PhiEvaluation {
   phiUsed: number;
   phiLo: number;

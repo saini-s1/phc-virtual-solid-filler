@@ -6,7 +6,6 @@ import type {
 } from "../types/inputs";
 import type { NutrientId } from "../types/nutrients";
 
-// ─────────────────────────────────────────────────────────────────────────────
 // VERIFIED Excel ground truth — "Irovy Orange" psyllium fiber powder.
 // Per-100g values and %w/w transcribed from the source workbook (Formulation sheet,
 // reference row 8) and confirmed to reproduce the Excel per-serving totals to < 1e-9
@@ -19,7 +18,6 @@ import type { NutrientId } from "../types/nutrients";
 // 101.36(b)(2)(i) they are not declared on a Supplement Facts panel when absent; they are
 // carried here as confirmed zeros so the data contract stays stable and INGREDIENT_INCOMPLETE
 // does not fire.
-// ─────────────────────────────────────────────────────────────────────────────
 
 function known(values: Partial<Record<NutrientId, number>>): IngredientNutrient[] {
   const out: IngredientNutrient[] = [];
@@ -242,9 +240,7 @@ export const exampleProduct: CalcRequest = {
   nutrientPolicies,
 };
 
-// ─────────────────────────────────────────────────────────────────────────────
 // Custom-input support — lets a user build their own formulation, not just the example.
-// ─────────────────────────────────────────────────────────────────────────────
 
 /**
  * Nutrients the custom editor exposes. Exactly the set that carries a declaration policy

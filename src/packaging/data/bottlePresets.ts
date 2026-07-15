@@ -1,11 +1,10 @@
-// ---------------------------------------------------------------------------
-// bottle presets — virtual solid filler (prototype).
+// Bottle presets — virtual solid filler (prototype).
 //
-// two bottle shapes are supported so the picture and the model can be poked at
+// Two bottle shapes are supported so the picture and the model can be poked at
 // with both round "packer" bottles and the rectangular ("oblong") bottles that
-// show up a lot in phc packaging.
+// show up a lot in PHC packaging.
 //
-// units:
+// Units:
 //   volumeMl          -- nominal bottle volume in mL (same as cc)
 //   shoulderHeightMm  -- the fill-line shoulder, mm from the bottle bottom
 //   neckHeightMm      -- full internal height up to the mouth, mm
@@ -16,12 +15,10 @@
 //                        hydraulic-diameter math (4*A/P) so an oblong bottle
 //                        gets a physically-correct wall length scale.
 //
-// >>> ADDING A BOTTLE? scroll down to BOTTLE_PRESETS and add a round(...) or
-// rect(...) line with your numbers. that's it. <<<
+// To add a bottle, add a round(...) or rect(...) line to BOTTLE_PRESETS below.
 //
-// dimensions here are realistic-ish catalog values, not measured cad. swap in
+// Dimensions here are realistic-ish catalog values, not measured CAD. Swap in
 // the real packaging-engineering numbers before trusting anything.
-// ---------------------------------------------------------------------------
 
 export type BottleShape = "round" | "rectangle";
 
@@ -78,7 +75,7 @@ const rect = (
 // Listed in the order they should appear in the dropdown — round first, then
 // rectangle. The InputPanel groups them with <optgroup> based on `shape`.
 export const BOTTLE_PRESETS: BottlePreset[] = [
-  // ── Round (packer-style) ───────────────────────────────────────────────
+  // Round (packer-style)
   round("r-175cc", "6 oz (175 cc) — Round", 175, 78, 86, 52),
   round("r-225cc", "8 oz (225 cc) — Round", 225, 88, 96, 56),
   round("r-300cc", "300 cc — Round", 300, 96, 104, 62),
@@ -89,7 +86,7 @@ export const BOTTLE_PRESETS: BottlePreset[] = [
   round("r-500cc", "500 cc — Round", 500, 110, 118, 76),
   round("r-625cc", "625 cc — Round", 625, 122, 130, 82),
 
-  // ── Rectangle (oblong) ─────────────────────────────────────────────────
+  // Rectangle (oblong)
   rect("x-215cc", "215 cc — Rectangle", 215, 84, 92, 58, 38),
   rect("x-230cc", "230 cc — Rectangle", 230, 86, 94, 60, 40),
   // Real catalog bottle — 300 cc oblong "Cub" (drawing PNG-3142-2). W 2.741" =
@@ -104,7 +101,6 @@ export const BOTTLE_PRESETS: BottlePreset[] = [
 export const getBottleById = (id: string): BottlePreset =>
   BOTTLE_PRESETS.find((b) => b.id === id) ?? BOTTLE_PRESETS[3];
 
-// ---------------------------------------------------------------------------
 // Custom (user-defined) bottle.
 //
 // The user drives a single knob — the nominal fill volume — and we synthesize a
@@ -125,16 +121,14 @@ export const getBottleById = (id: string): BottlePreset =>
 // Rectangles keep a 0.66 depth:width ratio (the preset average) with the same
 // body-volume target, so a round and a rectangle of equal volume see the same
 // equivalent diameter and therefore the same λ.
-// ---------------------------------------------------------------------------
 export const CUSTOM_BOTTLE_ID = "__custom__";
 
 /** Volume range for the custom-bottle quick-pick slider (mL === cc). Users can
  * also type any value directly; only the hard safety clamp below applies. */
 export const CUSTOM_VOLUME_RANGE = { minMl: 175, maxMl: 1000, stepMl: 25 };
 
-// Hard safety bounds for a typed volume (keeps the geometry math finite). The
-// surrogate flags anything outside its validated envelope on its own, so these
-// are deliberately generous — the user can enter any realistic bottle size.
+// Hard safety bounds for a typed volume (keeps the geometry math finite);
+// deliberately generous since the surrogate flags out-of-domain inputs itself.
 const CUSTOM_VOLUME_HARD = { minMl: 5, maxMl: 20000 };
 
 const clampVolume = (v: number) =>

@@ -254,9 +254,7 @@ export default function BottleVisualizer({ bottle, result, count, runId }: Props
   );
 }
 
-// ──────────────────────────────────────────────────────────────────────────
 // Geometry
-// ──────────────────────────────────────────────────────────────────────────
 
 type Geometry = {
   W: number;
@@ -389,9 +387,7 @@ function bottleBodyPath(g: Geometry, interior: boolean): string {
 const clamp = (v: number, min: number, max: number) =>
   Math.max(min, Math.min(max, v));
 
-// ──────────────────────────────────────────────────────────────────────────
 // Small UI bits
-// ──────────────────────────────────────────────────────────────────────────
 
 function Stat({ value, unit, label }: { value: string; unit: string; label: string }) {
   return (
