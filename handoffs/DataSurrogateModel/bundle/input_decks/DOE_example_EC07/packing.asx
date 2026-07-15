@@ -1,0 +1,37 @@
+# Cylinder-DOE packing run -- AUTO-GENERATED
+# Run EC07: EC H=9.50mm  density=1425.0kg/m3  N=150
+#   D_base=18.07mm  V_gummy=1753.1mm3  mass=2.498g
+#   cylinder D=144.5mm (=8.0x D_base)  H=247.0mm
+echo both
+
+particle_shape convex
+
+variable ts equal 5.00e-06
+variable viz equal 0.02/${ts}
+
+simulation_domain low (-0.0923, -0.0923, -0.005) high (0.0923, 0.0923, 0.2970)
+neigh_modify one 10000
+
+materials {m1}
+material_properties m1 youngsModulus 5000000.0 poissonsRatio 0.25 coefficientRestitution 0.25 coefficientFriction 0.01 coefficientRollingFriction 0.1 density 1425.0
+
+particle_contact_model normal hertz tangential history rolling_friction epsd2
+wall_contact_model normal hertz tangential history rolling_friction epsd2 settings store_force_contact yes
+
+enable_gravity
+simulation_timestep ${ts}
+
+# CAPPED MESHED cylinder container (primitive_wall incompatible with convex particles)
+mesh id cad1 file cylinder.stl material m1 scale 1.0 solid yes
+
+particle_template id pts material m1 shape convex file gummy_EC_H9.50.stl
+particle_distribution id pdd templates {pts} fractions {1.0}
+
+include creation.asx
+
+output_settings id output write_every_time 0.05 write_particles yes write_meshes no ascii yes
+dump dmp_par all custom/vtk ${viz} post/particles*.vtk id x y z radius
+status ${viz}
+enable_loadbalancing
+
+simulate target_time 2.0

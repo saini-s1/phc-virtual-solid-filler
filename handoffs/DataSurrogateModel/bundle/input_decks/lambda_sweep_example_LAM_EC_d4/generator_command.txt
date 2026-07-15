@@ -1,0 +1,9 @@
+# LAM_EC_d4: build_lambda.py has no per-run selection flag -- it plans
+# ALL (family x dmult) combinations in one invocation and submits them
+# together. LAM_EC_d4 = family EC, nominal H=9.5, dmult=4 (lambda~4),
+# one of the 12 runs produced by this single command:
+cd /home/health/fd2997/cylinder_doe
+python3 build_lambda.py --submit
+# (DMULTS = [3.0, 4.0, 5.0, 6.0] x family in {EC, DoryNew}; the
+#  d250/d275 low-lambda points came from a separate companion script:
+#  python3 build_lowlambda.py --submit)

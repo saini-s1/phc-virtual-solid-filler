@@ -1,0 +1,3 @@
+# VB_EC_500: EC family, H=9.5, 500cc bottle mesh, count=153
+cd /home/health/fd2997/cylinder_doe
+python3 build_bottle.py --id VB_EC_500 --family EC --H 9.5 --density 1425 --bottle /home/health/fd2997/110count/meshes/500cc_bottle.stl --count 153 --ncores 16 --walltime 8:00 --submit

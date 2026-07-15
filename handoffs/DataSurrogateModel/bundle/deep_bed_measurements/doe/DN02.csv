@@ -1,0 +1,2 @@
+run_id,family,H_mm,density_kgm3,N_created,N_settled_in,N_leaked,leak_pct,cyl_R_mm,bed_height_mm,solid_fraction_phi,bulk_density_kgm3,V_bed_cc,V_solid_cc,bed_over_diameter,layers_deep,gummies_across,radial_fill_frac,surface_roughness_mm,final_vtk
+DN02,DoryNew,10.0,1650.0,150,150,0,0.0,73.05,32.78,0.5024,829.0,549.61,276.13,0.224,3.28,8.0,0.933,1.65,particles400000.vtk

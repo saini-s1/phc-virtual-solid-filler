@@ -1,0 +1,5 @@
+# From doe_design.csv row: EC07,EC,9.5,1425.0,150,42,grid
+cd /home/health/fd2997/cylinder_doe
+python3 build_doe2.py --only EC07 --submit
+# (build_doe2.py wraps build_run.py; single-run equivalent:)
+python3 build_run.py --id EC07 --family EC --H 9.5 --density 1425 --count 150 --dmult 8.0 --seed 42 --walltime 4:00 --ncores 16 --submit

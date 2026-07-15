@@ -1,0 +1,2 @@
+run_id,family,H_mm,density_kgm3,N_created,N_settled_in,N_leaked,leak_pct,cyl_R_mm,bed_height_mm,solid_fraction_phi,bulk_density_kgm3,V_bed_cc,V_solid_cc,bed_over_diameter,layers_deep,gummies_across,radial_fill_frac,surface_roughness_mm,final_vtk
+LAM_EC_d5,EC,9.5,1425.0,104,104,0,0.0,45.17,51.34,0.554,789.5,329.08,182.33,0.568,5.4,5.0,0.891,2.28,particles1000000.vtk

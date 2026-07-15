@@ -1,0 +1,21 @@
+{
+  "run_id": "VB_EC_500",
+  "family": "EC",
+  "H_mm": 9.5,
+  "density_kgm3": 1425.0,
+  "count": 153,
+  "bottle_src": "/home/health/fd2997/110count/meshes/500cc_bottle.stl",
+  "src_unit_scale": 1.0,
+  "d_base_mm": 18.068,
+  "gummy_vol_mm3": 1753.14,
+  "bottle_H_mm": 135.4,
+  "body_diameter_mm": 75.99,
+  "mouth_diameter_mm": 47.72,
+  "lambda_gummies_across": 4.206,
+  "per_layer": 1,
+  "column_height_mm": 3602.9,
+  "column_top_mm": 3602.9,
+  "sim_time_s": 4.88,
+  "height_axis": "Y",
+  "seed": 42
+}

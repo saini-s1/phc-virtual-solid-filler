@@ -1,0 +1,2 @@
+run_id,family,H_mm,lambda,N,N_target,retention_pct,sim_fill_mm,pred_fill_mm,fill_err_pct,sim_phi,pred_phi,phi_err,sim_slack_pct,pred_slack_pct,leaks,drift_mm,frames,verdict
+VB_DN_900,DoryNew,13.0,4.646,194,194,100.0,148.5,150.9,-1.6,0.5648,0.559,0.0058,16.6,6.6,0,0.0,310,PASS

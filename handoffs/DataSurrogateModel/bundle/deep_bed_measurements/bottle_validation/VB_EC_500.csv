@@ -1,0 +1,2 @@
+run_id,family,H_mm,lambda,N,N_target,retention_pct,sim_fill_mm,pred_fill_mm,fill_err_pct,sim_phi,pred_phi,phi_err,sim_slack_pct,pred_slack_pct,leaks,drift_mm,frames,verdict
+VB_EC_500,EC,9.5,4.206,153,153,100.0,108.2,109.7,-1.3,0.5637,0.557,0.0067,20.1,10.4,0,0.0,245,PASS

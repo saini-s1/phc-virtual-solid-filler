@@ -1,0 +1,17 @@
+{
+  "run_id": "EC07",
+  "family": "EC",
+  "H_mm": 9.5,
+  "density_kgm3": 1425.0,
+  "count": 150,
+  "dmult": 8.0,
+  "d_base_mm": 18.068,
+  "gummy_vol_mm3": 1753.14,
+  "mass_g": 2.4982,
+  "cyl_diameter_mm": 144.54,
+  "cyl_height_mm": 246.96,
+  "per_layer": 21,
+  "stack_top_mm": 206.1,
+  "height_axis": "Y",
+  "seed": 42
+}

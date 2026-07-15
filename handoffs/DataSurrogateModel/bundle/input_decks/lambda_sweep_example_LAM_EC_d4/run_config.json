@@ -1,0 +1,17 @@
+{
+  "run_id": "LAM_EC_d4",
+  "family": "EC",
+  "H_mm": 9.5,
+  "density_kgm3": 1425.0,
+  "count": 67,
+  "dmult": 4.0,
+  "d_base_mm": 18.068,
+  "gummy_vol_mm3": 1753.14,
+  "mass_g": 2.4982,
+  "cyl_diameter_mm": 72.27,
+  "cyl_height_mm": 393.94,
+  "per_layer": 5,
+  "stack_top_mm": 353.1,
+  "height_axis": "Y",
+  "seed": 42
+}
