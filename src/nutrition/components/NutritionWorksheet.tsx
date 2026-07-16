@@ -275,7 +275,7 @@ export default function NutritionWorksheet({ response }: Props) {
       )}
 
       <p className="text-[11px] leading-relaxed text-ink-400">
-        Rounding follows the fixed 21 CFR 101.9(c) increments — never a hand-picked “Reco.” cell.
+        Rounding follows the fixed 21 CFR 101.9(c) increments, never a hand-picked “Reco.” cell.
         Vitamins and minerals print as % Daily Value, with the amount alongside.
       </p>
     </section>

@@ -86,7 +86,7 @@ const TOPICS: Topic[] = [
     body: (
       <div className="flex flex-col gap-3 text-[13px] leading-relaxed text-ink-600">
         <p>
-          You give it a <strong className="text-ink-800">formulation</strong> — the ingredients,
+          You give it a <strong className="text-ink-800">formulation</strong>: the ingredients,
           each ingredient's nutrients per 100 g, how much of each is in the blend (% by weight), and
           the <strong className="text-ink-800">dose weight</strong> (grams per serving). It returns a
           Nutrition Facts panel for one serving.
@@ -98,7 +98,7 @@ const TOPICS: Topic[] = [
         </p>
         <p className="rounded-lg border border-amber-200 bg-amber-50/70 px-3 py-2 text-[12px] text-amber-900">
           <strong>Prototype.</strong> The logic follows the source Excel and 21 CFR 101.9. Treat the
-          output as illustrative — confirm it in the controlled labeling system before any real use.
+          output as illustrative. Confirm it in the controlled labeling system before any real use.
         </p>
       </div>
     ),
@@ -132,7 +132,7 @@ const TOPICS: Topic[] = [
 
           <MethodCard badge="C" name="Total fiber" result="30" accent="bg-pg-blue-600">
             <p>
-              Same idea, but credits <strong>total</strong> dietary fiber at 2 cal/g — used when no
+              Same idea, but credits <strong>total</strong> dietary fiber at 2 cal/g, used when no
               soluble/insoluble split is available.
             </p>
             <Calc>4(0.14) + 4(9.48−5.48) + 2(5.48) = 27.5 → 30</Calc>
@@ -153,7 +153,7 @@ const TOPICS: Topic[] = [
         <div className="rounded-lg border border-pg-blue-100 bg-pg-blue-50/50 px-3 py-2.5 text-[12px] leading-relaxed text-ink-700">
           <strong className="text-pg-blue-700">Why B = 40 but C+ = 25:</strong> psyllium is almost
           entirely fiber. Method B treats that carbohydrate at ≈ 4 cal/g; Methods C and C+ drop the
-          non-digestible part from the carb calories and re-credit fiber at just 2 cal/g — C on the
+          non-digestible part from the carb calories and re-credit fiber at just 2 cal/g: C on the
           full ~5.5 g of fiber, C+ on the ~4.66 g that is soluble. The difference <em>is</em> the fiber.
         </div>
         <p className="text-[12px] leading-relaxed text-ink-500">
@@ -304,7 +304,7 @@ const TOPICS: Topic[] = [
             Every floor (Class I/II) nutrient needs an explicit overage; a missing one hard-blocks
             the label (<Cite>OVERAGE_MISSING</Cite>) rather than being guessed. What's{" "}
             <strong>not</strong> done: deriving that overage from stability data{" "}
-            <span className="font-mono">(ΔX + ΔY + CI·√Σσ²)</span> — it is taken as an input.
+            <span className="font-mono">(ΔX + ΔY + CI·√Σσ²)</span>. It is taken as an input.
           </p>
         </div>
 
@@ -319,7 +319,7 @@ const TOPICS: Topic[] = [
             </span>
           </div>
           <p className="mt-2 text-[12px] leading-relaxed text-amber-900/90">
-            OH-222 is process only — no formulas. The engine surfaces the content it governs
+            OH-222 is process only, no formulas. The engine surfaces the content it governs
             (serving info, ingredients, dosing, nutrient content) and rounds using the 21 CFR tables.
             What's <strong>not</strong> modeled is the approval wrapper: a Band-3 + Regulatory
             sign-off, version metadata, and the Enovia lock. The audit trail is traceability, not a

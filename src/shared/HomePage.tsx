@@ -66,7 +66,7 @@ export default function HomePage({ onSelect }: Props) {
             icon={<Apple className="h-7 w-7" />}
             name="Nutrition Calculator"
             kicker="Formulation · Nutrition Facts"
-            description="Turn ingredient and serving inputs into a rounded, FDA-style Nutrition Facts panel — with %DV and compliance checks."
+            description="Turn ingredient and serving inputs into a rounded, FDA-style Nutrition Facts panel, with %DV and compliance checks."
             chips={["Macros", "Micros", "%DV", "Compliance"]}
             cta="Launch module"
             accent="lime"

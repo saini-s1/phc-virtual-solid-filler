@@ -89,7 +89,7 @@ export default function OutputPanel({ result }: Props) {
           <div className="flex items-center gap-2.5">
             <AlertOctagon className="h-5 w-5 flex-shrink-0 text-rose-600" aria-hidden="true" />
             <p className="text-sm font-bold uppercase tracking-wide text-rose-700">
-              Model not valid — extrapolation
+              Model not valid: extrapolation
             </p>
           </div>
           <ul className="mt-2 space-y-1">
@@ -241,8 +241,8 @@ export default function OutputPanel({ result }: Props) {
             {result.isFullyValidated
               ? "DEM-validated envelope"
               : result.wallShapeFactor !== 1
-              ? "Oblong body — modeled via hydraulic-diameter equivalence"
-              : "Outside the full-bottle validation band — use with care"}
+              ? "Oblong body, modeled via hydraulic-diameter equivalence"
+              : "Outside the full-bottle validation band, use with care"}
           </span>
         </div>
       )}

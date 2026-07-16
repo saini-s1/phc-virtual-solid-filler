@@ -81,37 +81,6 @@ export default function SurrogateExplainer() {
         ))}
       </div>
 
-      {/* How it was built — high-level process */}
-      <div className="mt-6 surface-inset p-5">
-        <p className="eyebrow">How it was built</p>
-        <ol className="mt-3 grid gap-x-6 gap-y-2 text-xs leading-relaxed text-ink-600 md:grid-cols-2">
-          <li>
-            <strong className="text-ink-800">1 · DOE.</strong> Sweep gummy height
-            H, density ρ and container size λ — one Aspherix DEM run each.
-          </li>
-          <li>
-            <strong className="text-ink-800">2 · Measure φ.</strong> Settled solid
-            fraction from each run.
-          </li>
-          <li>
-            <strong className="text-ink-800">3 · Fit two GPs.</strong> Wall law
-            φ_eff(λ) + shape trend GP(H, ρ), each with uncertainty.
-          </li>
-          <li>
-            <strong className="text-ink-800">4 · Combine.</strong> Shape GP as a
-            ratio to nominal; wall law sets level + λ dependence.
-          </li>
-          <li>
-            <strong className="text-ink-800">5 · Validate.</strong> Six held-out
-            full-bottle runs → φ ± 0.007, fill ± 1.6%.
-          </li>
-          <li>
-            <strong className="text-ink-800">6 · Port.</strong> Coefficients →
-            JSON, evaluated in-browser, identical to Python.
-          </li>
-        </ol>
-      </div>
-
       {/* The two-part law — rendered equations */}
       <div className="mt-6 grid gap-4 lg:grid-cols-2">
         <div className="surface-inset p-5">
@@ -120,7 +89,7 @@ export default function SurrogateExplainer() {
             Predicted packing fraction φ = wall/size law × normalized shape trend:
           </p>
 
-          <EqBlock caption="master equation — combined φ">
+          <EqBlock caption="master equation for combined φ">
             <Sub base="φ" sub="used" />
             <Op>=</Op>
             <Sub base="φ" sub="eff" />
@@ -184,12 +153,12 @@ export default function SurrogateExplainer() {
 
           <ul className="mt-3 space-y-1.5 text-xs leading-relaxed text-ink-600">
             <li>
-              <strong className="text-ink-800">φ_eff(λ)</strong> — wall law; λ is
-              “gummies across”.
+              <strong className="text-ink-800">φ_eff(λ)</strong>: the wall law; λ
+              is “gummies across”.
             </li>
             <li>
-              <strong className="text-ink-800">GP(H, ρ) ratio</strong> — relative
-              height/density effect vs the nominal shape.
+              <strong className="text-ink-800">GP(H, ρ) ratio</strong>: relative
+              height/density effect versus the nominal shape.
             </li>
             <li>
               Each GP reports a{" "}
