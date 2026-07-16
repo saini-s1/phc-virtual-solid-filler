@@ -183,7 +183,7 @@ def build_readme(ws):
     ws.cell(row=1, column=1, value="packing_fraction_raw_data.xlsx").font = TITLE_FONT
     lines = [
         "",
-        "Gummy packing-fraction raw data handoff to Prashant Gupta. Snapshot 2026-07-15.",
+        "Gummy packing-fraction raw data handoff. Snapshot 2026-07-15.",
         "Source: /home/health/fd2997/cylinder_doe/ on the DEM compute cluster.",
         "Fixed physics for every run: Aspherix 6.5.0, E=5e6 Pa, nu=0.25, e=0.25,",
         "mu=0.01, mu_r=0.10, rho=1425 kg/m^3 nominal, dt=5e-6 s, Hertz + history",

@@ -1,4 +1,4 @@
-# Gummy Packing DEM — Handoff to Prashant Gupta
+# Gummy Packing DEM — Handoff Bundle
 
 Snapshot date: 2026-07-15. Source: `/home/health/fd2997/cylinder_doe/` on the
 DEM compute cluster. **This bundle is a read-only snapshot** — nothing was

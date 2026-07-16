@@ -1,6 +1,5 @@
 # Handoff Note — Gummy Packing-Fraction Raw Data
 
-**To:** Prashant Gupta
 **From:** PHC Virtual Solid Filler team
 **Snapshot date:** 2026-07-15
 **Cluster source:** `/home/health/fd2997/cylinder_doe/` (DEM compute cluster)
