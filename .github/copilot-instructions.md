@@ -1,8 +1,8 @@
-# Copilot Instructions — PHC Virtual Solid Filler
+# Copilot Instructions — PHC Modeling Suite
 
 ## Project overview
 
-This repository builds a professional internal P&G-style prototype called **PHC Virtual Solid Filler**. The goal is to demonstrate how DEM simulation outputs could be converted into a fast surrogate model for predicting bottle fill height and slack fill/headspace for PHC solid product forms, starting with gummies.
+This repository builds a professional internal P&G-style prototype called **PHC Modeling Suite**, covering two modules: the DEM Virtual Solid Filler and the Nutrition Calculator. The Virtual Solid Filler module demonstrates how DEM simulation outputs could be converted into a fast surrogate model for predicting bottle fill height and slack fill/headspace for PHC solid product forms, starting with gummies.
 
 The prototype is **not a validated tool** — all predictions are placeholder math. Every output must include a clear disclaimer that this is a prototype surrogate model.
 

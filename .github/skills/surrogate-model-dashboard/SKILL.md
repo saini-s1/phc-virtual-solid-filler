@@ -1,11 +1,11 @@
 ---
 name: surrogate-model-dashboard
-description: Use this skill when implementing or modifying the DEM surrogate model mockup, prediction logic, product/bottle presets, charts, or model explanation for the PHC Virtual Solid Filler. Covers surrogate math structure, mock coefficients, boundary checks, preset management, output calculations, and model-accuracy disclaimers. USE FOR: adding/updating prediction functions, defining product/bottle/gummy presets, implementing comparison logic (Current vs Dory vs Emerald City), boundary validation, output formatting, status rules, or model boundary warnings. DO NOT USE FOR: UI/component rendering, Framer Motion animation, or styling (use pg-professional-ui instead).
+description: Use this skill when implementing or modifying the DEM surrogate model mockup, prediction logic, product/bottle presets, charts, or model explanation for the PHC Modeling Suite. Covers surrogate math structure, mock coefficients, boundary checks, preset management, output calculations, and model-accuracy disclaimers. USE FOR: adding/updating prediction functions, defining product/bottle/gummy presets, implementing comparison logic (Current vs Dory vs Emerald City), boundary validation, output formatting, status rules, or model boundary warnings. DO NOT USE FOR: UI/component rendering, Framer Motion animation, or styling (use pg-professional-ui instead).
 ---
 
-# Surrogate Model Dashboard Skill — PHC Virtual Solid Filler
+# Surrogate Model Dashboard Skill — PHC Modeling Suite
 
-This skill covers the prediction engine and data modeling for the PHC Virtual Solid Filler mockup. It demonstrates how a fast surrogate model derived from DEM simulation could predict bottle fill height, slack fill, and headspace for solid product forms.
+This skill covers the prediction engine and data modeling for the PHC Modeling Suite's Virtual Solid Filler module. It demonstrates how a fast surrogate model derived from DEM simulation could predict bottle fill height, slack fill, and headspace for solid product forms.
 
 ## Product scope
 

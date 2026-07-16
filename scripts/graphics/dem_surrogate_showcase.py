@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 dem_surrogate_showcase.py -- Management-friendly "data + fit" graphic for the
-PHC Virtual Solid Filler surrogate model.
+PHC Modeling Suite surrogate model.
 
 Three panels:
   A (large, left)  : GP surrogate fit -- packing fraction phi vs gummy height.
@@ -412,7 +412,7 @@ def main():
 
     # ---- header ------------------------------------------------------------
     fig.text(0.50, 0.955,
-             "PHC Virtual Solid Filler \u2014 DEM Surrogate Model",
+             "PHC Modeling Suite \u2014 DEM Surrogate Model",
              fontsize=20, fontweight="bold", color=PG_NAVY,
              ha="center", va="bottom")
     fig.text(0.50, 0.922,

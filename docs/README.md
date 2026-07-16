@@ -1,16 +1,20 @@
-# PHC Virtual Solid Filler
+# PHC Modeling Suite
 
-> **Prototype only.** This is an internal P&G-style UI mockup for predicting bottle fill height and slack-fill / headspace for PHC solid product forms (starting with gummies). The packing-fraction math is a **real Gaussian Process surrogate trained on and validated against Aspherix DEM simulations** (see [Where real DEM coefficients connect](#where-real-dem-coefficients-connect) below) — but it is still a prototype **interface**: predictions are only trusted inside the validated design space, and any production decision should be confirmed against a full DEM run.
+> **Prototype only.** This is an internal P&G-style suite of two modules that share one app shell: a **DEM Virtual Solid Filler** for predicting bottle fill height and slack-fill / headspace for PHC solid product forms (starting with gummies), and a **Nutrition Calculator** for building compliant nutrition facts panels. The packing-fraction math in the filler module is a **real Gaussian Process surrogate trained on and validated against Aspherix DEM simulations** (see [Where real DEM coefficients connect](#where-real-dem-coefficients-connect) below) — but the suite as a whole is still a prototype **interface**: predictions are only trusted inside the validated design space, and any production decision should be confirmed against a full DEM run.
 
 ## Purpose
 
-Show the future workflow:
+Two modules, one shell (pick either from the home page):
 
-```
-Product + Bottle inputs  →  DEM design-of-experiments  →  Surrogate model  →  Instant UI prediction  →  Packaging decision
-```
+- **DEM Virtual Solid Filler** — show the future workflow:
 
-The mockup makes the vision tangible in under 10 seconds: inputs on the left, an animated technical bottle in the center, predicted outputs on the right, and scenario comparison + methodology below.
+  ```
+  Product + Bottle inputs  →  DEM design-of-experiments  →  Surrogate model  →  Instant UI prediction  →  Packaging decision
+  ```
+
+  Inputs on the left, an animated technical bottle in the center, predicted outputs on the right, and scenario comparison + methodology below.
+
+- **Nutrition Calculator** — build a recipe from ingredients (built-in library + your own saved ones), and get a live-computed, regulation-aware Nutrition Facts panel with rounding/compliance checks.
 
 ## Tech stack
 

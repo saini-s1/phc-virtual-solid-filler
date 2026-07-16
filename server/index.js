@@ -1,4 +1,4 @@
-// Express server for PHC Virtual Solid Filler on Azure App Service.
+// Express server for the PHC Modeling Suite on Azure App Service.
 // Serves the built SPA (dist/) and a small REST API for the custom ingredient
 // library ("Save to library" feature in the Nutrition Calculator).
 import express from "express";
@@ -91,5 +91,5 @@ app.get(/^(?!\/api\/).*/, (_req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`PHC Virtual Solid Filler listening on port ${PORT}`);
+  console.log(`PHC Modeling Suite listening on port ${PORT}`);
 });

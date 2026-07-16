@@ -1,11 +1,11 @@
 # Handoff Note — Gummy Packing-Fraction Raw Data
 
-**From:** PHC Virtual Solid Filler team
+**From:** PHC Modeling Suite team
 **Snapshot date:** 2026-07-15
 **Cluster source:** `/home/health/fd2997/cylinder_doe/` (DEM compute cluster)
 
 This folder is the reviewer-friendly landing of the raw DEM packing-fraction
-data behind the PHC Virtual Solid Filler surrogate model. Everything here is a
+data behind the PHC Modeling Suite's Virtual Solid Filler surrogate model. Everything here is a
 read-only snapshot: no Aspherix job was re-run, no raw output was modified, and
 no packing fraction was re-derived where a post-processed value already existed.
 

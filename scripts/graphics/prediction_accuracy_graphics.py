@@ -389,7 +389,7 @@ def fig_accuracy(pairs, dem_only, wall_pts):
                markeredgecolor=PG_NAVY, markersize=10, label="DEM full-bottle \u03c6")],
         loc="lower right", fontsize=8.3, framealpha=0.9)
 
-    _footer(fig, f"PHC Virtual Solid Filler  \u00b7  prototype DEM surrogate  \u00b7  "
+    _footer(fig, f"PHC Modeling Suite  \u00b7  prototype DEM surrogate  \u00b7  "
                  f"distilled from {N_DEM_TOTAL} real DEM simulations "
                  f"({N_PHI_DOE} packing + {N_WALL} wall-law + {N_FULLBOTTLE} full-bottle)")
     out = GRAPHICS / "prediction_accuracy.png"
@@ -524,7 +524,7 @@ def fig_metrics(pairs, dem_only):
         y -= n_lines * line_h + 0.045
 
 
-    _footer(fig, "PHC Virtual Solid Filler  \u00b7  prototype DEM surrogate  \u00b7  "
+    _footer(fig, "PHC Modeling Suite  \u00b7  prototype DEM surrogate  \u00b7  "
                  "statistics computed directly from validation_table.csv")
     out = GRAPHICS / "validation_metrics.png"
     fig.savefig(out, facecolor="white")

@@ -1,11 +1,11 @@
 ---
 name: pg-professional-ui
-description: Use this skill when building or modifying the PHC Virtual Solid Filler user interface, dashboard layout, visual design, animations, accessibility, or component styling. Covers React + TypeScript + Vite + Tailwind enterprise dashboard conventions, P&G-inspired visual language, mock surrogate-model UX patterns, and prototype disclaimers. USE FOR: creating new UI components, refining layout/spacing/typography, adding Framer Motion transitions, wiring up the bottle fill visualization, comparison charts, metric cards, input panels, or workflow explainers. DO NOT USE FOR: real DEM physics implementation, backend integration, or non-PHC projects.
+description: Use this skill when building or modifying the PHC Modeling Suite user interface, dashboard layout, visual design, animations, accessibility, or component styling. Covers React + TypeScript + Vite + Tailwind enterprise dashboard conventions, P&G-inspired visual language, mock surrogate-model UX patterns, and prototype disclaimers. USE FOR: creating new UI components, refining layout/spacing/typography, adding Framer Motion transitions, wiring up the bottle fill visualization, comparison charts, metric cards, input panels, or workflow explainers. DO NOT USE FOR: real DEM physics implementation, backend integration, or non-PHC projects.
 ---
 
-# P&G Professional UI Skill — PHC Virtual Solid Filler
+# P&G Professional UI Skill — PHC Modeling Suite
 
-This skill governs UI work for a professional internal P&G-style prototype called **PHC Virtual Solid Filler**. The product demonstrates how DEM simulation outputs could be converted into a fast surrogate model for predicting bottle fill height and slack fill/headspace for PHC solid product forms, starting with gummies.
+This skill governs UI work for a professional internal P&G-style prototype called **PHC Modeling Suite**. The Virtual Solid Filler module demonstrates how DEM simulation outputs could be converted into a fast surrogate model for predicting bottle fill height and slack fill/headspace for PHC solid product forms, starting with gummies.
 
 ## Product goal
 

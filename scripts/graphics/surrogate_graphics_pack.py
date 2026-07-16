@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """
 surrogate_graphics_pack.py  --  Four standalone publication-ready graphics for
-the PHC Virtual Solid Filler surrogate model.
+the PHC Modeling Suite surrogate model.
 
 Outputs (written to graphics/ folder):
   1. wall_law_standalone.png

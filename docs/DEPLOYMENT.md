@@ -72,7 +72,7 @@ client bundle at build time, so they must be set in the CI environment
 
    ```bash
    # 1. Create an Azure AD app registration + service principal
-   az ad app create --display-name "phc-virtual-solid-filler-gha"
+   az ad app create --display-name "phc-modeling-suite-gha"
    # note the appId (this is AZURE_CLIENT_ID) from the output, then:
    az ad sp create --id <appId>
 

@@ -172,7 +172,7 @@ def _style_axes(ax):
 
 def _footer(fig):
     fig.text(0.5, 0.012,
-             "PHC Virtual Solid Filler  \u00b7  prototype DEM surrogate  \u00b7  "
+             "PHC Modeling Suite  \u00b7  prototype DEM surrogate  \u00b7  "
              "boundaries drawn from the fitted phi_gp / wall_gp coefficients",
              ha="center", fontsize=8, color=PG_SLATE_LT, style="italic")
 
